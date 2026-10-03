@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ScholarMatched — SOP Reviewer</title>
+
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Inter, Arial, sans-serif;
+  background: #f8faf9;
+  color: #1a2e2c;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.app {
+  min-height: 100vh;
+  display: flex;
+}
+
+/* SIDEBAR */
+
+.sidebar {
+  width: 250px;
+  background: white;
+  border-right: 1px solid #e2e8f0;
+  padding: 24px 16px;
+  position: fixed;
+  inset: 0 auto 0 0;
+  overflow-y: auto;
+  z-index: 100;
+}
+
+.logo {
+  font-size: 23px;
+  font-weight: 800;
+  color: #26736b;
+  padding: 4px 12px 28px;
+}
+
+.nav-section {
+  margin-bottom: 24px;
+}
+
+.nav-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  padding: 0 12px 8px;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 12px;
+  border-radius: 10px;
+  color: #64748b;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 3px;
+  transition: .2s;
+}
+
+.nav-link:hover {
+  background: #f0f7f5;
+  color: #26736b;
+}
+
+.nav-link.active {
+  background: #e8f3f1;
+  color: #26736b;
+}
+
+.nav-icon {
+  width: 20px;
+  text-align: center;
+  font-size: 17px;
+}
+
+.sidebar-bottom {
+  border-top: 1px solid #e2e8f0;
+  margin-top: 20px;
+  padding-top: 15px;
+}
+
+/* MAIN */
+
+.main {
+  margin-left: 250px;
+  width: calc(100% - 250px);
+  min-height: 100vh;
+}
+
+.topbar {
+  height: 72px;
+  background: white;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px;
+}
+
+.menu-button {
+  display: none;
+  border: 0;
+  background: none;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.top-avatar,
+.avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #dceeea;
+  color: #26736b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+}
+
+.page-area {
+  max-width: 1150px;
+  margin: auto;
+  padding: 40px 28px 60px;
+}
+
+.page-heading {
+  margin-bottom: 30px;
+}
+
+.page-heading h1 {
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  margin-bottom: 8px;
+}
+
+.page-heading p {
+  color: #64748b;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+/* REVIEWER */
+
+.reviewer-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px;
+}
+
+.card {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+  padding: 24px;
+  box-shadow: 0 3px 18px rgba(0,0,0,.035);
+}
+
+.card h2 {
+  font-size: 19px;
+  margin-bottom: 8px;
+}
+
+.card-description {
+  color: #64748b;
+  font-size: 14px;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+/* TEXTAREA */
+
+textarea {
+  width: 100%;
+  height: 430px;
+  resize: vertical;
+  border: 1px solid #d2d5d8;
+  border-radius: 12px;
+  padding: 15px;
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.6;
+  outline: none;
+}
+
+textarea:focus {
+  border-color: #26736b;
+  box-shadow: 0 0 0 3px rgba(38,115,107,.08);
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+button {
+  font-family: inherit;
+}
+
+.primary-btn {
+  background: #26736b;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 11px 20px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.primary-btn:hover {
+  background: #1f625b;
+}
+
+.secondary-btn {
+  background: white;
+  color: #26736b;
+  border: 1px solid #26736b;
+  border-radius: 10px;
+  padding: 10px 18px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* RESULTS */
+
+.results {
+  display: none;
+}
+
+.score-container {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  background: #f0f7f5;
+  border-radius: 14px;
+  padding: 18px;
+  margin-bottom: 22px;
+}
+
+.score {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: white;
+  color: #26736b;
+  border: 5px solid #26736b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 21px;
+  font-weight: 800;
+}
+
+.score-info h3 {
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+.score-info p {
+  color: #64748b;
+  font-size: 12px;
+}
+
+/* FEEDBACK */
+
+.feedback-item {
+  padding: 15px 0;
+  border-bottom: 1px solid #eef2f1;
+}
+
+.feedback-item:last-child {
+  border-bottom: none;
+}
+
+.feedback-item h3 {
+  font-size: 14px;
+  margin-bottom: 6px;
+}
+
+.feedback-item p {
+  color: #64748b;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: #e8f3f1;
+  color: #26736b;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  margin-bottom: 7px;
+}
+
+/* EMPTY STATE */
+
+.empty-review {
+  height: 430px;
+  border: 1px dashed #cbd5e1;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 30px;
+}
+
+.empty-review h3 {
+  font-size: 17px;
+  margin-bottom: 8px;
+}
+
+.empty-review p {
+  color: #64748b;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* MOBILE */
+
+@media (max-width: 900px) {
+  .reviewer-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+
+  .sidebar {
+    transform: translateX(-100%);
+    transition: .25s;
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .main {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .menu-button {
+    display: block;
+  }
+
+  .topbar {
+    padding: 0 18px;
+  }
+
+  .page-area {
+    padding: 28px 16px;
+  }
+
+  .page-heading h1 {
+    font-size: 25px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<!-- SIDEBAR -->
+
+<aside class="sidebar" id="sidebar">
+
+  <div class="logo">
+    ScholarMatched
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-title">Main</div>
+
+    <a href="home.html" class="nav-link">
+      <span class="nav-icon">⌂</span>
+      Dashboard
+    </a>
+
+    <a href="notifications.html" class="nav-link">
+      <span class="nav-icon">♢</span>
+      Notifications
+    </a>
+
+    <a href="advisor.html" class="nav-link">
+      <span class="nav-icon">✦</span>
+      Advisor
+    </a>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-title">Tools</div>
+
+    <a href="sop-reviewer.html" class="nav-link active">
+      <span class="nav-icon">▤</span>
+      SOP Reviewer
+    </a>
+
+    <a href="tracker.html" class="nav-link">
+      <span class="nav-icon">✓</span>
+      Application Tracker
+    </a>
+
+    <a href="checklist.html" class="nav-link">
+      <span class="nav-icon">☑</span>
+      Checklist
+    </a>
+
+    <a href="templates.html" class="nav-link">
+      <span class="nav-icon">▣</span>
+      Templates
+    </a>
+
+    <a href="visa-travel.html" class="nav-link">
+      <span class="nav-icon">✈</span>
+      Visa & Travel
+    </a>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-title">Account</div>
+
+    <a href="profile.html" class="nav-link">
+      <span class="nav-icon">♙</span>
+      Profile
+    </a>
+
+    <a href="referral.html" class="nav-link">
+      <span class="nav-icon">↗</span>
+      Referral
+    </a>
+  </div>
+
+  <div class="sidebar-bottom">
+
+    <a href="index.html" class="nav-link">
+      <span class="nav-icon">←</span>
+      Public Website
+    </a>
+
+    <a href="#" class="nav-link" onclick="logout()">
+      <span class="nav-icon">↪</span>
+      Logout
+    </a>
+
+  </div>
+
+</aside>
+
+
+<!-- MAIN -->
+
+<main class="main">
+
+<header class="topbar">
+
+  <button class="menu-button" onclick="toggleSidebar()">
+    ☰
+  </button>
+
+  <div></div>
+
+  <div class="top-avatar" id="topAvatar">
+    U
+  </div>
+
+</header>
+
+
+<section class="page-area">
+
+  <div class="page-heading">
+
+    <h1>SOP Reviewer</h1>
+
+    <p>
+      Improve your Statement of Purpose with structured feedback
+      on clarity, structure, relevance and scholarship readiness.
+    </p>
+
+  </div>
+
+
+  <div class="reviewer-grid">
+
+
+    <!-- INPUT -->
+
+    <div class="card">
+
+      <h2>Your Statement of Purpose</h2>
+
+      <p class="card-description">
+        Paste your SOP below and review it before submitting
+        your scholarship or university application.
+      </p>
+
+      <textarea
+        id="sopText"
+        placeholder="Paste your Statement of Purpose here..."
+      ></textarea>
+
+      <div class="actions">
+
+        <button
+          class="secondary-btn"
+          onclick="clearSOP()">
+          Clear
+        </button>
+
+        <button
+          class="primary-btn"
+          onclick="reviewSOP()">
+          Review SOP
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <!-- RESULTS -->
+
+    <div class="card">
+
+      <div id="emptyState" class="empty-review">
+
+        <div>
+
+          <h3>Your review will appear here</h3>
+
+          <p>
+            Submit your SOP to receive feedback about its
+            structure, clarity, academic motivation and
+            scholarship suitability.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div id="results" class="results">
+
+        <h2>Review Results</h2>
+
+        <p class="card-description">
+          Here's a preliminary assessment of your SOP.
+        </p>
+
+
+        <div class="score-container">
+
+          <div class="score" id="score">
+            0
+          </div>
+
+          <div class="score-info">
+
+            <h3>Overall Readiness</h3>
+
+            <p>
+              Based on the current draft.
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <div class="feedback-item">
+
+          <span class="badge">
+            Structure
+          </span>
+
+          <h3>Organization</h3>
+
+          <p id="structureFeedback">
+            Your SOP should have a clear introduction,
+            academic background, motivation, goals and conclusion.
+          </p>
+
+        </div>
+
+
+        <div class="feedback-item">
+
+          <span class="badge">
+            Clarity
+          </span>
+
+          <h3>Writing Clarity</h3>
+
+          <p id="clarityFeedback">
+            Make sure each paragraph communicates one
+            clear idea and avoid unnecessarily complicated sentences.
+          </p>
+
+        </div>
+
+
+        <div class="feedback-item">
+
+          <span class="badge">
+            Goals
+          </span>
+
+          <h3>Academic Goals</h3>
+
+          <p>
+            Clearly connect your previous academic experience
+            with your intended program and future goals.
+          </p>
+
+        </div>
+
+
+        <div class="feedback-item">
+
+          <span class="badge">
+            Personal
+          </span>
+
+          <h3>Personal Evidence</h3>
+
+          <p>
+            Include specific experiences, projects or achievements
+            that demonstrate your preparation and motivation.
+          </p>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+</main>
+
+</div>
+
+
+<script>
+
+/* USER */
+
+function loadUser() {
+
+  const data =
+    JSON.parse(localStorage.getItem("onboardingData") || "{}");
+
+  const name =
+    data.name ||
+    data.firstName ||
+    data.fullName ||
+    "Student";
+
+  const initials =
+    name
+      .split(" ")
+      .map(x => x.charAt(0))
+      .join("")
+      .substring(0, 2)
+      .toUpperCase();
+
+  document.getElementById("topAvatar").textContent =
+    initials || "U";
+}
+
+
+/* REVIEW */
+
+function reviewSOP() {
+
+  const text =
+    document.getElementById("sopText").value.trim();
+
+  if (!text) {
+
+    alert("Please paste your SOP first.");
+
+    return;
+  }
+
+
+  const words =
+    text.split(/\s+/).filter(Boolean).length;
+
+
+  /*
+    Simple frontend demonstration.
+
+    Later this function can call your own
+    FastAPI + LLM backend.
+  */
+
+  let score = 60;
+
+  if (words >= 300) score += 8;
+  if (words >= 500) score += 7;
+  if (words >= 700) score += 5;
+
+  if (text.includes("experience")) score += 4;
+  if (text.includes("research")) score += 4;
+  if (text.includes("goal")) score += 4;
+
+  if (score > 95) score = 95;
+
+
+  document.getElementById("score").textContent =
+    score;
+
+
+  document.getElementById("emptyState").style.display =
+    "none";
+
+  document.getElementById("results").style.display =
+    "block";
+
+
+  document.getElementById("structureFeedback").textContent =
+    words < 300
+      ? "The draft appears short. Consider developing your academic background, motivation and future goals."
+      : "The draft has enough content for a meaningful structure review. Make sure each paragraph has a clear purpose.";
+
+
+  document.getElementById("clarityFeedback").textContent =
+    words > 1000
+      ? "The draft is relatively long. Review it for repetition and unnecessary wording."
+      : "Keep sentences direct and make the connection between your experiences and your intended program clear.";
+}
+
+
+/* CLEAR */
+
+function clearSOP() {
+
+  document.getElementById("sopText").value = "";
+
+  document.getElementById("results").style.display =
+    "none";
+
+  document.getElementById("emptyState").style.display =
+    "flex";
+}
+
+
+/* SIDEBAR */
+
+function toggleSidebar() {
+
+  document
+    .getElementById("sidebar")
+    .classList.toggle("open");
+}
+
+
+/* LOGOUT */
+
+function logout() {
+
+  localStorage.removeItem("onboardingData");
+
+  window.location.href = "index.html";
+}
+
+
+loadUser();
+
+</script>
+
+</body>
+</html>

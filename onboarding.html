@@ -1,0 +1,1230 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Scholarship Matching — Onboarding</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100%;
+            font-family:
+                Inter,
+                ui-sans-serif,
+                system-ui,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+            background: #f8faf9;
+            color: #1a2e2c;
+        }
+
+        body {
+            min-height: 100vh;
+        }
+
+        button {
+            font: inherit;
+        }
+
+        /* =========================
+           HEADER
+        ========================= */
+
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: white;
+            border-bottom: 1px solid #eaebed;
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 4px;
+            background: #e5e7eb;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: #26736b;
+            transition: width 0.3s ease;
+        }
+
+        .header-inner {
+            max-width: 1152px;
+            margin: 0 auto;
+            min-height: 92px;
+            padding: 0 32px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo img {
+            width: 100px;
+            height: auto;
+            object-fit: contain;
+        }
+
+        .step-text {
+            font-size: 14px;
+            font-weight: 600;
+            color: #6b7280;
+        }
+
+        /* =========================
+           MAIN
+        ========================= */
+
+        main {
+            max-width: 768px;
+            margin: 0 auto;
+            padding: 64px 24px 150px;
+        }
+
+        .question-title {
+            margin: 0;
+            font-size: 36px;
+            line-height: 1.2;
+            font-weight: 700;
+            letter-spacing: -0.8px;
+            color: #1a2e2c;
+        }
+
+        .question-description {
+            margin-top: 14px;
+            margin-bottom: 36px;
+
+            font-size: 17px;
+            line-height: 1.6;
+            color: #6b7280;
+        }
+
+        /* =========================
+           OPTIONS
+        ========================= */
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .option {
+            width: 100%;
+            padding: 20px 22px;
+
+            display: flex;
+            align-items: center;
+            gap: 16px;
+
+            background: white;
+            border: 1px solid #d2d5d8;
+            border-radius: 16px;
+
+            cursor: pointer;
+            text-align: left;
+
+            transition:
+                border-color 0.2s ease,
+                background 0.2s ease,
+                box-shadow 0.2s ease,
+                transform 0.1s ease;
+        }
+
+        .option:hover {
+            border-color: #26736b;
+            box-shadow: 0 3px 12px rgba(38, 115, 107, 0.08);
+        }
+
+        .option:active {
+            transform: scale(0.995);
+        }
+
+        .option.selected {
+            border-color: #26736b;
+            background: #f0f8f6;
+            box-shadow: 0 0 0 2px rgba(38, 115, 107, 0.08);
+        }
+
+        /* Radio */
+
+        .radio {
+            flex-shrink: 0;
+
+            width: 22px;
+            height: 22px;
+
+            border: 2px solid #c7cfce;
+            border-radius: 50%;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .option.selected .radio {
+            border-color: #26736b;
+        }
+
+        .radio-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #26736b;
+            transform: scale(0);
+            transition: transform 0.15s ease;
+        }
+
+        .option.selected .radio-dot {
+            transform: scale(1);
+        }
+
+        .option-content {
+            flex: 1;
+        }
+
+        .option-title {
+            font-size: 16px;
+            line-height: 1.4;
+            font-weight: 650;
+            color: #1a2e2c;
+        }
+
+        .option-description {
+            margin-top: 4px;
+            font-size: 14px;
+            line-height: 1.5;
+            color: #6b7280;
+        }
+
+        /* =========================
+           FOOTER
+        ========================= */
+
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(10px);
+
+            border-top: 1px solid #eaebed;
+        }
+
+        .footer-inner {
+            max-width: 768px;
+            margin: 0 auto;
+
+            padding: 18px 24px;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .btn {
+            min-width: 120px;
+            height: 48px;
+
+            padding: 0 24px;
+
+            border-radius: 10px;
+            border: none;
+
+            font-size: 15px;
+            font-weight: 600;
+
+            cursor: pointer;
+
+            transition:
+                background 0.2s ease,
+                opacity 0.2s ease,
+                transform 0.1s ease;
+        }
+
+        .btn:active:not(:disabled) {
+            transform: scale(0.98);
+        }
+
+        .btn-back {
+            background: white;
+            color: #26736b;
+            border: 1px solid #d2d5d8;
+        }
+
+        .btn-back:hover:not(:disabled) {
+            background: #f5f8f7;
+        }
+
+        .btn-next {
+            background: #26736b;
+            color: white;
+        }
+
+        .btn-next:hover:not(:disabled) {
+            background: #1f625b;
+        }
+
+        .btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.45;
+        }
+
+        /* =========================
+           COMPLETION
+        ========================= */
+
+        .completion {
+            text-align: center;
+            padding: 50px 0;
+        }
+
+        .completion-icon {
+            width: 72px;
+            height: 72px;
+            margin: 0 auto 24px;
+
+            border-radius: 50%;
+            background: #e8f5f2;
+            color: #26736b;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+        .completion h1 {
+            margin: 0;
+            font-size: 32px;
+        }
+
+        .completion p {
+            margin: 16px auto 0;
+            max-width: 520px;
+
+            font-size: 16px;
+            line-height: 1.6;
+            color: #6b7280;
+        }
+
+        /* =========================
+           MOBILE
+        ========================= */
+
+        @media (max-width: 640px) {
+
+            .header-inner {
+                min-height: 76px;
+                padding: 0 18px;
+            }
+
+            .logo img {
+                width: 82px;
+            }
+
+            main {
+                padding: 40px 18px 140px;
+            }
+
+            .question-title {
+                font-size: 29px;
+            }
+
+            .question-description {
+                font-size: 16px;
+                margin-bottom: 28px;
+            }
+
+            .option {
+                padding: 17px;
+            }
+
+            .option-title {
+                font-size: 15px;
+            }
+
+            .option-description {
+                font-size: 13px;
+            }
+
+            .footer-inner {
+                padding: 14px 18px;
+            }
+
+            .btn {
+                min-width: 105px;
+                height: 46px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- =========================
+         HEADER
+    ========================= -->
+
+    <header class="header">
+
+        <div class="progress-container">
+            <div id="progressBar" class="progress-bar"></div>
+        </div>
+
+        <div class="header-inner">
+
+            <div class="logo">
+                <!--
+                    Put your SM.png file in the same folder as this HTML.
+                    If you don't have it, the text fallback will appear.
+                -->
+                <img
+                    src="SM.png"
+                    alt="Scholarship Matching"
+                    onerror="this.style.display='none'; document.getElementById('logoText').style.display='block';"
+                >
+
+                <strong
+                    id="logoText"
+                    style="display:none; color:#26736b; font-size:20px;"
+                >
+                    ScholarshipMatch
+                </strong>
+            </div>
+
+            <div id="stepText" class="step-text">
+                Step 1 of 7
+            </div>
+
+        </div>
+    </header>
+
+
+    <!-- =========================
+         MAIN CONTENT
+    ========================= -->
+
+    <main>
+
+        <div id="questionArea">
+
+            <h1 id="questionTitle" class="question-title"></h1>
+
+            <p id="questionDescription" class="question-description"></p>
+
+            <div id="options" class="options"></div>
+
+        </div>
+
+        <!-- Completion screen -->
+
+        <div id="completion" class="completion" style="display:none;">
+
+            <div class="completion-icon">
+                ✓
+            </div>
+
+            <h1>You're all set!</h1>
+
+            <p>
+                Your preferences have been saved. We can now use your
+                answers to match you with relevant scholarship opportunities.
+            </p>
+
+        </div>
+
+    </main>
+
+
+    <!-- =========================
+         FOOTER
+    ========================= -->
+
+    <footer class="footer">
+
+        <div class="footer-inner">
+
+            <button
+                id="backButton"
+                class="btn btn-back"
+                type="button"
+                onclick="previousStep()"
+            >
+                Back
+            </button>
+
+            <button
+                id="nextButton"
+                class="btn btn-next"
+                type="button"
+                onclick="nextStep()"
+                disabled
+            >
+                Next
+            </button>
+
+        </div>
+
+    </footer>
+
+
+    <script>
+
+        /*
+        ============================================================
+        SCHOLARSHIP ONBOARDING DATA
+        ============================================================
+
+        Step 1 is based on the page you provided.
+
+        Replace steps 2-7 with the actual questions/options once
+        you provide those pages.
+        */
+
+        const steps = [
+
+            /* =========================
+               STEP 1
+            ========================= */
+
+            {
+                question: "What degree do you want to pursue?",
+
+                description:
+                    "Choose one, we'll match you with scholarships for your level.",
+
+                options: [
+
+                    {
+                        title: "High School / Pre-university",
+                        description:
+                            "Secondary school or foundation year",
+                        value: "high_school"
+                    },
+
+                    {
+                        title: "Bachelor's Degree",
+                        description:
+                            "Undergraduate — typically 3–4 years",
+                        value: "bachelors"
+                    },
+
+                    {
+                        title: "Master's Degree",
+                        description:
+                            "Graduate — typically 1–2 years",
+                        value: "masters"
+                    },
+
+                    {
+                        title: "PhD / Doctoral",
+                        description:
+                            "Research doctorate program",
+                        value: "phd"
+                    },
+
+                    {
+                        title: "Postdoc / Fellowship",
+                        description:
+                            "Post-doctoral research position",
+                        value: "postdoc"
+                    },
+
+                    {
+                        title: "Diploma / Certificate",
+                        description:
+                            "Vocational or short-cycle program",
+                        value: "diploma"
+                    }
+
+                ]
+            },
+
+
+            /* =========================
+               STEP 2
+            ========================= */
+
+            {
+                question: "What do you want to study?",
+
+                description:
+                    "Choose the field that best matches your intended program.",
+
+                options: [
+
+                    {
+                        title: "Computer Science & Technology",
+                        description: "Computer science, AI, software and technology",
+                        value: "computer_science"
+                    },
+
+                    {
+                        title: "Engineering",
+                        description: "Engineering and related technical fields",
+                        value: "engineering"
+                    },
+
+                    {
+                        title: "Business & Economics",
+                        description: "Business, management, finance and economics",
+                        value: "business"
+                    },
+
+                    {
+                        title: "Natural Sciences",
+                        description: "Physics, chemistry, biology and related sciences",
+                        value: "natural_sciences"
+                    },
+
+                    {
+                        title: "Social Sciences",
+                        description: "Social sciences, education and humanities",
+                        value: "social_sciences"
+                    }
+
+                ]
+            },
+
+
+            /* =========================
+               STEP 3
+            ========================= */
+
+            {
+                question: "Where do you want to study?",
+
+                description:
+                    "Select your preferred study destination.",
+
+                options: [
+
+                    {
+                        title: "Germany",
+                        description: "Study at universities in Germany",
+                        value: "germany"
+                    },
+
+                    {
+                        title: "United States",
+                        description: "Study in the United States",
+                        value: "usa"
+                    },
+
+                    {
+                        title: "United Kingdom",
+                        description: "Study in the United Kingdom",
+                        value: "uk"
+                    },
+
+                    {
+                        title: "Canada",
+                        description: "Study in Canada",
+                        value: "canada"
+                    },
+
+                    {
+                        title: "Australia",
+                        description: "Study in Australia",
+                        value: "australia"
+                    },
+
+                    {
+                        title: "Any country",
+                        description: "Show scholarships from multiple destinations",
+                        value: "any"
+                    }
+
+                ]
+            },
+
+
+            /* =========================
+               STEP 4
+            ========================= */
+
+            {
+                question: "What type of funding are you looking for?",
+
+                description:
+                    "Choose the funding options you are interested in.",
+
+                options: [
+
+                    {
+                        title: "Fully Funded",
+                        description:
+                            "Tuition and major living expenses covered",
+                        value: "fully_funded"
+                    },
+
+                    {
+                        title: "Partial Funding",
+                        description:
+                            "Scholarships covering part of the costs",
+                        value: "partial"
+                    },
+
+                    {
+                        title: "Tuition Waiver",
+                        description:
+                            "Scholarships that reduce or eliminate tuition",
+                        value: "tuition"
+                    },
+
+                    {
+                        title: "Any Funding",
+                        description:
+                            "Show all relevant scholarship opportunities",
+                        value: "any_funding"
+                    }
+
+                ]
+            },
+
+
+            /* =========================
+               STEP 5
+            ========================= */
+
+            {
+                question: "What is your current academic status?",
+
+                description:
+                    "Tell us where you currently are in your education.",
+
+                options: [
+
+                    {
+                        title: "Currently Studying",
+                        description:
+                            "I am currently enrolled in a program",
+                        value: "studying"
+                    },
+
+                    {
+                        title: "Recently Graduated",
+                        description:
+                            "I recently completed my previous degree",
+                        value: "graduated"
+                    },
+
+                    {
+                        title: "Will Graduate Soon",
+                        description:
+                            "I am currently completing my degree",
+                        value: "graduating"
+                    },
+
+                    {
+                        title: "Taking a Gap Year",
+                        description:
+                            "I am currently between academic programs",
+                        value: "gap_year"
+                    }
+
+                ]
+            },
+
+
+            /* =========================
+               STEP 6
+            ========================= */
+
+            {
+                question: "When do you want to start your studies?",
+
+                description:
+                    "Select your preferred intake or start period.",
+
+                options: [
+
+                    {
+                        title: "As soon as possible",
+                        description:
+                            "I want the earliest suitable opportunity",
+                        value: "asap"
+                    },
+
+                    {
+                        title: "Within the next year",
+                        description:
+                            "I plan to start within approximately one year",
+                        value: "next_year"
+                    },
+
+                    {
+                        title: "1–2 years from now",
+                        description:
+                            "I am planning further ahead",
+                        value: "one_two_years"
+                    },
+
+                    {
+                        title: "I'm flexible",
+                        description:
+                            "Show opportunities regardless of intake",
+                        value: "flexible"
+                    }
+
+                ]
+            },
+
+
+            /* =========================
+               STEP 7
+            ========================= */
+
+            {
+                question: "What is your preferred scholarship priority?",
+
+                description:
+                    "Choose what matters most to you when selecting opportunities.",
+
+                options: [
+
+                    {
+                        title: "Maximum Financial Support",
+                        description:
+                            "Prioritize scholarships with comprehensive funding",
+                        value: "maximum_funding"
+                    },
+
+                    {
+                        title: "Top Universities",
+                        description:
+                            "Prioritize opportunities at highly recognized universities",
+                        value: "universities"
+                    },
+
+                    {
+                        title: "Easy Eligibility",
+                        description:
+                            "Prioritize opportunities matching straightforward eligibility requirements",
+                        value: "eligibility"
+                    },
+
+                    {
+                        title: "More Opportunities",
+                        description:
+                            "Show the widest range of matching scholarships",
+                        value: "more_opportunities"
+                    }
+
+                ]
+            }
+
+        ];
+
+
+        /*
+        ============================================================
+        STATE
+        ============================================================
+        */
+
+        let currentStep = 0;
+
+        const answers = new Array(steps.length).fill(null);
+
+
+        /*
+        ============================================================
+        DOM ELEMENTS
+        ============================================================
+        */
+
+        const questionTitle =
+            document.getElementById("questionTitle");
+
+        const questionDescription =
+            document.getElementById("questionDescription");
+
+        const optionsContainer =
+            document.getElementById("options");
+
+        const progressBar =
+            document.getElementById("progressBar");
+
+        const stepText =
+            document.getElementById("stepText");
+
+        const backButton =
+            document.getElementById("backButton");
+
+        const nextButton =
+            document.getElementById("nextButton");
+
+        const questionArea =
+            document.getElementById("questionArea");
+
+        const completion =
+            document.getElementById("completion");
+
+
+        /*
+        ============================================================
+        RENDER CURRENT STEP
+        ============================================================
+        */
+
+        function renderStep() {
+
+            const step = steps[currentStep];
+
+            const stepNumber = currentStep + 1;
+
+            const totalSteps = steps.length;
+
+
+            /* Header */
+
+            stepText.textContent =
+                `Step ${stepNumber} of ${totalSteps}`;
+
+
+            /* Progress */
+
+            const progress =
+                (stepNumber / totalSteps) * 100;
+
+            progressBar.style.width =
+                `${progress}%`;
+
+
+            /* Question */
+
+            questionTitle.textContent =
+                step.question;
+
+            questionDescription.textContent =
+                step.description;
+
+
+            /* Remove old options */
+
+            optionsContainer.innerHTML = "";
+
+
+            /* Create options */
+
+            step.options.forEach((option, index) => {
+
+                const button =
+                    document.createElement("button");
+
+                button.type = "button";
+
+                button.className = "option";
+
+
+                /*
+                Restore previous selection
+                */
+
+                if (
+                    answers[currentStep] === option.value
+                ) {
+                    button.classList.add("selected");
+                }
+
+
+                button.innerHTML = `
+
+                    <div class="radio">
+                        <div class="radio-dot"></div>
+                    </div>
+
+                    <div class="option-content">
+
+                        <div class="option-title">
+                            ${escapeHTML(option.title)}
+                        </div>
+
+                        <div class="option-description">
+                            ${escapeHTML(option.description)}
+                        </div>
+
+                    </div>
+
+                `;
+
+
+                button.addEventListener(
+                    "click",
+                    () => selectOption(option.value)
+                );
+
+
+                optionsContainer.appendChild(button);
+
+            });
+
+
+            /* Back button */
+
+            backButton.disabled =
+                currentStep === 0;
+
+
+            /* Next button */
+
+            nextButton.disabled =
+                answers[currentStep] === null;
+
+
+            /*
+            Last step changes button text
+            */
+
+            if (currentStep === totalSteps - 1) {
+                nextButton.textContent = "Finish";
+            } else {
+                nextButton.textContent = "Next";
+            }
+
+        }
+
+
+        /*
+        ============================================================
+        SELECT OPTION
+        ============================================================
+        */
+
+        function selectOption(value) {
+
+            answers[currentStep] = value;
+
+            renderStep();
+
+        }
+
+
+        /*
+        ============================================================
+        NEXT
+        ============================================================
+        */
+
+        function nextStep() {
+
+            /*
+            Don't continue without an answer
+            */
+
+            if (answers[currentStep] === null) {
+                return;
+            }
+
+
+            /*
+            Last step
+            */
+
+            if (currentStep === steps.length - 1) {
+
+                finishOnboarding();
+
+                return;
+            }
+
+
+            currentStep++;
+
+            renderStep();
+
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+
+        }
+
+
+        /*
+        ============================================================
+        BACK
+        ============================================================
+        */
+
+        function previousStep() {
+
+            if (currentStep === 0) {
+                return;
+            }
+
+
+            currentStep--;
+
+            renderStep();
+
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+
+        }
+
+
+        /*
+        ============================================================
+        FINISH
+        ============================================================
+        */
+
+        function finishOnboarding() {
+
+            /*
+            Save answers locally.
+
+            This does NOT send anything to a server.
+            */
+
+            localStorage.setItem(
+                "scholarship_onboarding_answers",
+                JSON.stringify(answers)
+            );
+
+
+            questionArea.style.display =
+                "none";
+
+            completion.style.display =
+                "block";
+
+
+            /*
+            100% progress
+            */
+
+            progressBar.style.width =
+                "100%";
+
+
+            stepText.textContent =
+                "Complete";
+
+
+            backButton.style.display =
+                "none";
+
+            nextButton.style.display =
+                "none";
+
+        }
+
+
+        /*
+        ============================================================
+        HTML ESCAPE
+        ============================================================
+        */
+
+        function escapeHTML(value) {
+
+            return String(value)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+
+        }
+
+
+        /*
+        ============================================================
+        RESTORE SAVED ANSWERS
+        ============================================================
+        */
+
+        function loadSavedAnswers() {
+
+            const saved =
+                localStorage.getItem(
+                    "scholarship_onboarding_answers"
+                );
+
+
+            if (!saved) {
+                return;
+            }
+
+
+            try {
+
+                const parsed =
+                    JSON.parse(saved);
+
+
+                if (
+                    Array.isArray(parsed) &&
+                    parsed.length === steps.length
+                ) {
+
+                    for (
+                        let i = 0;
+                        i < parsed.length;
+                        i++
+                    ) {
+
+                        answers[i] =
+                            parsed[i];
+
+                    }
+
+                }
+
+            } catch (error) {
+
+                console.log(
+                    "Could not restore saved answers."
+                );
+
+            }
+
+        }
+
+
+        /*
+        ============================================================
+        START APPLICATION
+        ============================================================
+        */
+
+        loadSavedAnswers();
+
+        renderStep();
+
+    </script>
+
+</body>
+</html>
+```

@@ -1,0 +1,1339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>ScholarMatched — Checklist</title>
+
+  <style>
+    :root {
+      --primary: #26736b;
+      --primary-dark: #1f625b;
+      --bg: #f8faf9;
+      --text: #1a2e2c;
+      --muted: #64748b;
+      --light-muted: #94a3b8;
+      --border: #e2e8f0;
+      --white: #ffffff;
+      --sidebar-width: 250px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Inter, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    /* =========================
+       SIDEBAR
+    ========================= */
+
+    .sidebar {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: var(--sidebar-width);
+      height: 100vh;
+      background: white;
+      border-right: 1px solid var(--border);
+      padding: 24px 16px;
+      z-index: 1000;
+      overflow-y: auto;
+      transition: transform .25s ease;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 10px 28px;
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--primary);
+    }
+
+    .brand-mark {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      background: var(--primary);
+      color: white;
+      display: grid;
+      place-items: center;
+      font-weight: 900;
+    }
+
+    .nav-title {
+      padding: 0 12px 9px;
+      color: var(--light-muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .nav {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .nav a,
+    .logout {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 11px 12px;
+      border: 0;
+      border-radius: 10px;
+      background: transparent;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .nav a:hover,
+    .logout:hover {
+      background: #f1f7f6;
+      color: var(--primary);
+    }
+
+    .nav a.active {
+      background: #e7f3f1;
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    .nav-icon {
+      width: 20px;
+      text-align: center;
+    }
+
+    .logout {
+      margin-top: 20px;
+    }
+
+    /* =========================
+       MAIN
+    ========================= */
+
+    .main {
+      margin-left: var(--sidebar-width);
+      min-height: 100vh;
+    }
+
+    .topbar {
+      height: 72px;
+      background: white;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 0 32px;
+    }
+
+    .menu-btn {
+      display: none;
+      margin-right: auto;
+      border: 0;
+      background: transparent;
+      font-size: 24px;
+      cursor: pointer;
+    }
+
+    .top-user {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .user-name {
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: #dcefeb;
+      color: var(--primary);
+      display: grid;
+      place-items: center;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .content {
+      max-width: 1100px;
+      margin: auto;
+      padding: 32px;
+    }
+
+    .page-header {
+      margin-bottom: 25px;
+    }
+
+    .page-header h1 {
+      font-size: 28px;
+      letter-spacing: -.03em;
+      margin-bottom: 7px;
+    }
+
+    .page-header p {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    /* =========================
+       PROGRESS CARD
+    ========================= */
+
+    .progress-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 22px;
+      margin-bottom: 22px;
+    }
+
+    .progress-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 13px;
+    }
+
+    .progress-title {
+      font-weight: 750;
+      font-size: 15px;
+    }
+
+    .progress-percent {
+      color: var(--primary);
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 9px;
+      background: #edf2f1;
+      border-radius: 99px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      width: 35%;
+      height: 100%;
+      background: var(--primary);
+      border-radius: inherit;
+      transition: width .25s ease;
+    }
+
+    .progress-subtitle {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 10px;
+    }
+
+    /* =========================
+       CHECKLIST
+    ========================= */
+
+    .checklist-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 18px;
+    }
+
+    .category {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .category-header {
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .category-header h2 {
+      font-size: 16px;
+      letter-spacing: -.01em;
+    }
+
+    .category-count {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .items {
+      padding: 7px 0;
+    }
+
+    .check-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 13px;
+      padding: 14px 20px;
+      cursor: pointer;
+      transition: background .15s;
+    }
+
+    .check-item:hover {
+      background: #fafdfc;
+    }
+
+    .checkbox {
+      position: relative;
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+      margin-top: 1px;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .check-item.done .checkbox {
+      background: var(--primary);
+      border-color: var(--primary);
+    }
+
+    .check-item.done .checkbox::after {
+      content: "✓";
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -53%);
+      color: white;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .item-content {
+      flex: 1;
+    }
+
+    .item-title {
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1.35;
+    }
+
+    .item-description {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+      margin-top: 3px;
+    }
+
+    .check-item.done .item-title {
+      color: var(--muted);
+      text-decoration: line-through;
+    }
+
+    .check-item.done .item-description {
+      opacity: .7;
+    }
+
+    /* =========================
+       ACTIONS
+    ========================= */
+
+    .bottom-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .reset-btn,
+    .save-btn {
+      padding: 10px 17px;
+      border-radius: 9px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 13px;
+    }
+
+    .reset-btn {
+      background: white;
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+
+    .reset-btn:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .save-btn {
+      background: var(--primary);
+      color: white;
+      border: 1px solid var(--primary);
+    }
+
+    .save-btn:hover {
+      background: var(--primary-dark);
+    }
+
+    /* =========================
+       MOBILE
+    ========================= */
+
+    .overlay {
+      display: none;
+    }
+
+    @media (max-width: 850px) {
+
+      .checklist-grid {
+        grid-template-columns: 1fr;
+      }
+
+    }
+
+    @media (max-width: 760px) {
+
+      .sidebar {
+        transform: translateX(-100%);
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .main {
+        margin-left: 0;
+      }
+
+      .menu-btn {
+        display: block;
+      }
+
+      .topbar {
+        justify-content: flex-end;
+        padding: 0 18px;
+      }
+
+      .content {
+        padding: 22px 16px;
+      }
+
+      .overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, .35);
+        z-index: 999;
+      }
+
+      .overlay.show {
+        display: block;
+      }
+
+      .user-name {
+        display: none;
+      }
+
+    }
+
+    @media (max-width: 480px) {
+
+      .page-header h1 {
+        font-size: 24px;
+      }
+
+      .category-header {
+        padding: 16px;
+      }
+
+      .check-item {
+        padding: 13px 16px;
+      }
+
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- SIDEBAR -->
+
+  <aside class="sidebar" id="sidebar">
+
+    <div class="brand">
+      <div class="brand-mark">S</div>
+      ScholarMatched
+    </div>
+
+    <div class="nav-title">Workspace</div>
+
+    <nav class="nav">
+
+      <a href="home.html">
+        <span class="nav-icon">⌂</span>
+        Dashboard
+      </a>
+
+      <a href="notifications.html">
+        <span class="nav-icon">♢</span>
+        Notifications
+      </a>
+
+      <a href="advisor.html">
+        <span class="nav-icon">✦</span>
+        Advisor
+      </a>
+
+      <a href="sop-reviewer.html">
+        <span class="nav-icon">✎</span>
+        SOP Reviewer
+      </a>
+
+      <a href="tracker.html">
+        <span class="nav-icon">✓</span>
+        Application Tracker
+      </a>
+
+      <a href="checklist.html" class="active">
+        <span class="nav-icon">☑</span>
+        Checklist
+      </a>
+
+      <a href="templates.html">
+        <span class="nav-icon">▤</span>
+        Templates
+      </a>
+
+      <a href="visa-travel.html">
+        <span class="nav-icon">✈</span>
+        Visa & Travel
+      </a>
+
+      <a href="profile.html">
+        <span class="nav-icon">◎</span>
+        Profile
+      </a>
+
+      <a href="referral.html">
+        <span class="nav-icon">↗</span>
+        Referral
+      </a>
+
+      <a href="index.html">
+        <span class="nav-icon">↗</span>
+        Public Website
+      </a>
+
+    </nav>
+
+    <button class="logout" onclick="logout()">
+      <span class="nav-icon">⇥</span>
+      Logout
+    </button>
+
+  </aside>
+
+
+  <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+
+  <!-- MAIN -->
+
+  <main class="main">
+
+    <header class="topbar">
+
+      <button class="menu-btn" onclick="openSidebar()">
+        ☰
+      </button>
+
+      <div class="top-user">
+
+        <div class="user-name" id="userName">
+          Student
+        </div>
+
+        <div class="avatar" id="avatar">
+          S
+        </div>
+
+      </div>
+
+    </header>
+
+
+    <section class="content">
+
+      <div class="page-header">
+
+        <h1>Application Checklist</h1>
+
+        <p>
+          Keep your scholarship applications organized and make sure
+          nothing important is missed.
+        </p>
+
+      </div>
+
+
+      <!-- PROGRESS -->
+
+      <div class="progress-card">
+
+        <div class="progress-top">
+
+          <div class="progress-title">
+            Overall Progress
+          </div>
+
+          <div class="progress-percent" id="progressPercent">
+            35%
+          </div>
+
+        </div>
+
+        <div class="progress-track">
+
+          <div
+            class="progress-fill"
+            id="progressFill">
+          </div>
+
+        </div>
+
+        <div class="progress-subtitle" id="progressSubtitle">
+          7 of 20 tasks completed
+        </div>
+
+      </div>
+
+
+      <!-- CHECKLIST -->
+
+      <div class="checklist-grid">
+
+
+        <!-- PROFILE -->
+
+        <section class="category">
+
+          <div class="category-header">
+
+            <h2>Profile & Documents</h2>
+
+            <span
+              class="category-count"
+              data-count="profile">
+              2 / 5
+            </span>
+
+          </div>
+
+          <div class="items">
+
+            <div class="check-item done" onclick="toggleItem(this)">
+              <div class="checkbox"></div>
+
+              <div class="item-content">
+                <div class="item-title">
+                  Complete your profile
+                </div>
+
+                <div class="item-description">
+                  Add your academic and personal information.
+                </div>
+              </div>
+            </div>
+
+
+            <div class="check-item done" onclick="toggleItem(this)">
+              <div class="checkbox"></div>
+
+              <div class="item-content">
+                <div class="item-title">
+                  Upload CV / Resume
+                </div>
+
+                <div class="item-description">
+                  Keep an updated academic CV ready.
+                </div>
+              </div>
+            </div>
+
+
+            <div class="check-item" onclick="toggleItem(this)">
+              <div class="checkbox"></div>
+
+              <div class="item-content">
+                <div class="item-title">
+                  Prepare academic transcripts
+                </div>
+
+                <div class="item-description">
+                  Collect official or provisional transcripts.
+                </div>
+              </div>
+            </div>
+
+
+            <div class="check-item" onclick="toggleItem(this)">
+              <div class="checkbox"></div>
+
+              <div class="item-content">
+                <div class="item-title">
+                  Prepare recommendation letters
+                </div>
+
+                <div class="item-description">
+                  Contact professors and request references.
+                </div>
+              </div>
+            </div>
+
+
+            <div class="check-item" onclick="toggleItem(this)">
+              <div class="checkbox"></div>
+
+              <div class="item-content">
+                <div class="item-title">
+                  Prepare passport
+                </div>
+
+                <div class="item-description">
+                  Make sure your passport is valid.
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </section>
+
+
+        <!-- APPLICATION -->
+
+        <section class="category">
+
+          <div class="category-header">
+
+            <h2>Application Materials</h2>
+
+            <span
+              class="category-count"
+              data-count="application">
+              2 / 5
+            </span>
+
+          </div>
+
+          <div class="items">
+
+            <div class="check-item done" onclick="toggleItem(this)">
+              <div class="checkbox"></div>
+
+              <div class="item-content">
+                <div class="item-title">
+                  Draft Statement of Purpose
+                </div>
+
+                <div class="item-description">
+                  Explain your academic goals and motivation.
+                </div>
+              </div>
+            </div>
+
+
+            <div class="check-item done" onclick="toggleItem(this)">
+              <div class="checkbox"></div>
+
+              <div class="item-content">
+                <div class="item-title">
+                  Review scholarship requirements
+                </div>
+
+                <div class="item-description">
+                  Check eligibility and required documents.
+                </div>
+              </div>
+            </div>
+
+
+            <div class="check-item" onclick="toggleItem(this)">
+              <div class="checkbox"></div>
+
+              <div class="item-content">
+                <div class="item-title">
+                  Finalize motivation letter
+                </div>
+
+                <div class="item-description">
+                  Tailor your letter to the scholarship.
+                </div>
+              </div>
+            </div>
+
+
+            <div class="check-item" onclick="toggleItem(this)">
+              <div class="checkbox"></div>
+
+              <div class="item-content">
+                <div class="item-title">
+                  Review application form
+                </div>
+
+                <div class="item-description">
+                  Check every field before submitting.
+                </div>
+              </div>
+            </div>
+
+
+            <div class="check-item" onclick="toggleItem(this)">
+              <div class="checkbox"></div>
+
+              <div class="item-content">
+                <div class="item-title">
+                  Submit application
+                </div>
+
+                <div class="item-description">
+                  Submit before the official deadline.
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </section>
+
+
+        <!-- LANGUAGE -->
+
+        <section class="category">
+
+          <div class="category-header">
+
+            <h2>Language & Tests</h2>
+
+            <span
+              class="category-count"
+              data-count="tests">
+              1 / 4
+            </span>
+
+          </div>
+
+          <div class="items">
+
+            <div class="check-item done" onclick="toggleItem(this)">
+              <div class="checkbox"></div>
+
+              <div class="item-content">
+                <div class="item-title">
+                  Check language requirements
+                </div>
+
+                <div class="item-description">
+                  Determine whether IELTS, TOEFL or another test is required.
+                </div>
+              </div>
+            </div>
+
+
+            <div class="check-item" onclick="toggleItem(this)">
+              <div class="checkbox"></div>
+
+              <div class="item-content">
+                <div class="item-title">
+                  Register for language test
+                </div>
+
+                <div class="item-description">
+                  Book the required examination if necessary.
+                </div>
+              </div>
+            </div>
+
+
+            <div class="check-item" onclick="toggleItem(this)">
+              <div class="checkbox"></div>
+
+              <div class="item-content">
+                <div class="item-title">
+                  Upload test score
+                </div>
+
+                <div class="item-description">
+                  Add your official score report.
+                </div>
+              </div>
+            }
+
+
+            <div class="check-item" onclick="toggleItem(this)">
+              <div class="checkbox"></div>
+
+              <div class="item-content">
+                <div class="item-title">
+                  Verify minimum score
+                </div>
+
+                <div class="item-description">
+                  Confirm that your score satisfies the program requirement.
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </section>
+
+
+        <!-- FINAL -->
+
+        <section class="category">
+
+          <div class="category-header">
+
+            <h2>Final Review</h2>
+
+            <span
+              class="category-count"
+              data-count="final">
+              2 / 6
+            </span>
+
+          </div>
+
+          <div class="items">
+
+            <div class="check-item done" onclick="toggleItem(this)">
+              <div class="checkbox"></div>
+
+              <div class="item-content">
+                <div class="item-title">
+                  Check all documents
+                </div>
+
+                <div class="item-description">
+                  Make sure every required document is available.
+                </div>
+              </div>
+            </div>
+
+
+            <div class="check-item done" onclick="toggleItem(this)">
+              <div class="checkbox"></div>
+
+              <div class="item-content">
+                <div class="item-title">
+                  Check application deadline
+                </div>
+
+                <div class="item-description">
+                  Confirm the exact submission deadline.
+                </div>
+              </div>
+            </div>
+
+
+            <div class="check-item" onclick="toggleItem(this)">
+              <div class="checkbox"></div>
+
+              <div class="item-content">
+                <div class="item-title">
+                  Proofread application
+                </div>
+
+                <div class="item-description">
+                  Review spelling, grammar and consistency.
+                </div>
+              </div>
+            }
+
+
+            <div class="check-item" onclick="toggleItem(this)">
+              <div class="checkbox"></div>
+
+              <div class="item-content">
+                <div class="item-title">
+                  Verify contact information
+                </div>
+
+                <div class="item-description">
+                  Make sure your email and phone number are correct.
+                </div>
+              </div>
+            }
+
+
+            <div class="check-item" onclick="toggleItem(this)">
+              <div class="checkbox"></div>
+
+              <div class="item-content">
+                <div class="item-title">
+                  Save confirmation
+                </div>
+
+                <div class="item-description">
+                  Keep proof of successful submission.
+                </div>
+              </div>
+            }
+
+
+            <div class="check-item" onclick="toggleItem(this)">
+              <div class="checkbox"></div>
+
+              <div class="item-content">
+                <div class="item-title">
+                  Add application to tracker
+                </div>
+
+                <div class="item-description">
+                  Record the application and future updates.
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </section>
+
+      </div>
+
+
+      <div class="bottom-actions">
+
+        <button
+          class="reset-btn"
+          onclick="resetChecklist()">
+          Reset
+        </button>
+
+        <button
+          class="save-btn"
+          onclick="saveChecklist()">
+          Save Progress
+        </button>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <script>
+
+    /* =========================
+       USER
+    ========================= */
+
+    function loadUser() {
+
+      try {
+
+        const data = JSON.parse(
+          localStorage.getItem("onboardingData") || "{}"
+        );
+
+        const name =
+          data.name ||
+          data.fullName ||
+          data.firstName ||
+          "Student";
+
+        document.getElementById("userName").textContent = name;
+
+        const initials = name
+          .split(" ")
+          .filter(Boolean)
+          .map(x => x[0])
+          .join("")
+          .substring(0, 2)
+          .toUpperCase();
+
+        document.getElementById("avatar").textContent =
+          initials || "S";
+
+      } catch {
+
+        document.getElementById("userName").textContent =
+          "Student";
+
+        document.getElementById("avatar").textContent =
+          "S";
+
+      }
+
+    }
+
+
+    /* =========================
+       CHECKLIST
+    ========================= */
+
+    function toggleItem(item) {
+
+      item.classList.toggle("done");
+
+      updateProgress();
+
+      saveChecklist(false);
+
+    }
+
+
+    function updateProgress() {
+
+      const all =
+        document.querySelectorAll(".check-item");
+
+      const completed =
+        document.querySelectorAll(".check-item.done");
+
+      const total =
+        all.length;
+
+      const done =
+        completed.length;
+
+      const percentage =
+        total === 0
+          ? 0
+          : Math.round((done / total) * 100);
+
+      document.getElementById("progressFill").style.width =
+        percentage + "%";
+
+      document.getElementById("progressPercent").textContent =
+        percentage + "%";
+
+      document.getElementById("progressSubtitle").textContent =
+        done + " of " + total + " tasks completed";
+
+
+      /* Update category counters */
+
+      document
+        .querySelectorAll(".category")
+        .forEach(category => {
+
+          const items =
+            category.querySelectorAll(".check-item");
+
+          const completed =
+            category.querySelectorAll(".check-item.done");
+
+          const counter =
+            category.querySelector(".category-count");
+
+          if (counter) {
+
+            counter.textContent =
+              completed.length +
+              " / " +
+              items.length;
+
+          }
+
+        });
+
+    }
+
+
+    /* =========================
+       SAVE
+    ========================= */
+
+    function saveChecklist(showMessage = true) {
+
+      const states = [];
+
+      document
+        .querySelectorAll(".check-item")
+        .forEach(item => {
+
+          states.push(
+            item.classList.contains("done")
+          );
+
+        });
+
+      localStorage.setItem(
+        "scholarMatchedChecklist",
+        JSON.stringify(states)
+      );
+
+      if (showMessage) {
+
+        alert("Checklist progress saved.");
+
+      }
+
+    }
+
+
+    /* =========================
+       LOAD
+    ========================= */
+
+    function loadChecklist() {
+
+      const saved =
+        localStorage.getItem(
+          "scholarMatchedChecklist"
+        );
+
+      if (!saved) {
+
+        updateProgress();
+        return;
+
+      }
+
+      try {
+
+        const states =
+          JSON.parse(saved);
+
+        const items =
+          document.querySelectorAll(".check-item");
+
+        items.forEach((item, index) => {
+
+          if (states[index] === true) {
+
+            item.classList.add("done");
+
+          } else {
+
+            item.classList.remove("done");
+
+          }
+
+        });
+
+      } catch {
+
+        console.log(
+          "Unable to load saved checklist."
+        );
+
+      }
+
+      updateProgress();
+
+    }
+
+
+    /* =========================
+       RESET
+    ========================= */
+
+    function resetChecklist() {
+
+      if (!confirm("Reset your entire checklist?")) {
+        return;
+      }
+
+      document
+        .querySelectorAll(".check-item")
+        .forEach(item => {
+
+          item.classList.remove("done");
+
+        });
+
+      localStorage.removeItem(
+        "scholarMatchedChecklist"
+      );
+
+      updateProgress();
+
+    }
+
+
+    /* =========================
+       SIDEBAR
+    ========================= */
+
+    function openSidebar() {
+
+      document
+        .getElementById("sidebar")
+        .classList.add("open");
+
+      document
+        .getElementById("overlay")
+        .classList.add("show");
+
+    }
+
+
+    function closeSidebar() {
+
+      document
+        .getElementById("sidebar")
+        .classList.remove("open");
+
+      document
+        .getElementById("overlay")
+        .classList.remove("show");
+
+    }
+
+
+    /* =========================
+       LOGOUT
+    ========================= */
+
+    function logout() {
+
+      localStorage.removeItem(
+        "onboardingData"
+      );
+
+      window.location.href =
+        "index.html";
+
+    }
+
+
+    /* =========================
+       INITIALIZE
+    ========================= */
+
+    loadUser();
+    loadChecklist();
+    window.addEventListener("scholarMatchedReady", loadChecklist);
+
+  </script>
+
+</body>
+</html>

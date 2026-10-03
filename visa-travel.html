@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#26736b">
+  <title>Visa & Travel — ScholarMatched</title>
+
+  <style>
+    :root {
+      --primary: #26736b;
+      --primary-dark: #1e5f58;
+      --bg: #f8faf9;
+      --card: #ffffff;
+      --text: #1a2e2c;
+      --muted: #64748b;
+      --light-muted: #94a3b8;
+      --border: #e2e8f0;
+      --success: #15803d;
+      --warning: #b45309;
+      --danger: #dc2626;
+      --shadow: 0 4px 20px rgba(0,0,0,.045);
+      --radius: 14px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Inter, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    /* SIDEBAR */
+
+    .sidebar {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 250px;
+      height: 100vh;
+      background: white;
+      border-right: 1px solid var(--border);
+      padding: 22px 14px;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 5px 10px 25px;
+    }
+
+    .brand-mark {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: var(--primary);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 17px;
+    }
+
+    .brand-name {
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: -.03em;
+    }
+
+    .brand-name span {
+      color: var(--primary);
+    }
+
+    .nav {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      flex: 1;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 12px;
+      border-radius: 10px;
+      color: #52616f;
+      font-size: 14px;
+      font-weight: 600;
+      transition: .2s;
+    }
+
+    .nav-link:hover {
+      background: #f1f6f5;
+      color: var(--primary);
+    }
+
+    .nav-link.active {
+      background: #eaf4f2;
+      color: var(--primary);
+    }
+
+    .nav-icon {
+      width: 21px;
+      text-align: center;
+      font-size: 17px;
+    }
+
+    .sidebar-bottom {
+      border-top: 1px solid var(--border);
+      padding-top: 12px;
+    }
+
+    .logout {
+      width: 100%;
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .logout:hover {
+      background: #fef2f2;
+      color: var(--danger);
+    }
+
+    /* MAIN */
+
+    .main {
+      margin-left: 250px;
+      min-height: 100vh;
+    }
+
+    .topbar {
+      height: 72px;
+      background: rgba(255,255,255,.94);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 34px;
+      position: sticky;
+      top: 0;
+      z-index: 900;
+      backdrop-filter: blur(8px);
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .topbar-title {
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .profile-mini {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .profile-name {
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .content {
+      max-width: 1250px;
+      padding: 34px;
+    }
+
+    .page-header {
+      margin-bottom: 26px;
+    }
+
+    .page-header h1 {
+      font-size: 30px;
+      letter-spacing: -.04em;
+      margin-bottom: 8px;
+    }
+
+    .page-header p {
+      max-width: 700px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    /* COUNTRY SELECTOR */
+
+    .country-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+      margin-bottom: 22px;
+    }
+
+    .country-card h2 {
+      font-size: 17px;
+      margin-bottom: 6px;
+    }
+
+    .country-card p {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 16px;
+    }
+
+    .country-row {
+      display: flex;
+      gap: 10px;
+      max-width: 600px;
+    }
+
+    .country-select {
+      flex: 1;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      background: white;
+      padding: 11px 12px;
+      color: var(--text);
+      outline: none;
+    }
+
+    .country-select:focus {
+      border-color: var(--primary);
+    }
+
+    .primary-btn {
+      border: none;
+      border-radius: 9px;
+      background: var(--primary);
+      color: white;
+      padding: 11px 18px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .primary-btn:hover {
+      background: var(--primary-dark);
+    }
+
+    /* CARDS */
+
+    .section-title {
+      font-size: 19px;
+      letter-spacing: -.025em;
+      margin: 30px 0 15px;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 17px;
+    }
+
+    .info-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+    }
+
+    .info-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 11px;
+      background: #eaf4f2;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 21px;
+      margin-bottom: 15px;
+    }
+
+    .info-card h3 {
+      font-size: 16px;
+      margin-bottom: 7px;
+    }
+
+    .info-card p {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    /* CHECKLIST */
+
+    .checklist-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .check-item {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      padding: 15px 18px;
+      border-bottom: 1px solid #edf1f3;
+    }
+
+    .check-item:last-child {
+      border-bottom: none;
+    }
+
+    .check-box {
+      width: 19px;
+      height: 19px;
+      accent-color: var(--primary);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .check-text {
+      flex: 1;
+    }
+
+    .check-text strong {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 3px;
+    }
+
+    .check-text span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .status {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 5px 9px;
+      border-radius: 20px;
+      background: #f1f5f9;
+      color: var(--muted);
+    }
+
+    /* TRAVEL PLANNER */
+
+    .travel-grid {
+      display: grid;
+      grid-template-columns: 1.3fr .7fr;
+      gap: 18px;
+    }
+
+    .travel-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+    }
+
+    .travel-card h3 {
+      font-size: 16px;
+      margin-bottom: 15px;
+    }
+
+    .timeline {
+      position: relative;
+      padding-left: 25px;
+    }
+
+    .timeline::before {
+      content: "";
+      position: absolute;
+      left: 7px;
+      top: 5px;
+      bottom: 5px;
+      width: 2px;
+      background: #dbe8e6;
+    }
+
+    .timeline-item {
+      position: relative;
+      margin-bottom: 20px;
+    }
+
+    .timeline-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .timeline-dot {
+      position: absolute;
+      left: -25px;
+      top: 3px;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--primary);
+      border: 3px solid white;
+      box-shadow: 0 0 0 1px #c8dedb;
+    }
+
+    .timeline-item strong {
+      font-size: 13px;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .timeline-item span {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .budget-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .budget-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 11px;
+      border-bottom: 1px solid #edf1f3;
+      font-size: 13px;
+    }
+
+    .budget-row:last-child {
+      border-bottom: none;
+    }
+
+    .budget-row span {
+      color: var(--muted);
+    }
+
+    .budget-row strong {
+      color: var(--text);
+    }
+
+    /* MOBILE */
+
+    .mobile-menu {
+      display: none;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      font-size: 25px;
+    }
+
+    .overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.35);
+      z-index: 999;
+    }
+
+    @media (max-width: 1000px) {
+      .info-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .travel-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .sidebar {
+        transform: translateX(-100%);
+        transition: transform .25s ease;
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .overlay.open {
+        display: block;
+      }
+
+      .main {
+        margin-left: 0;
+      }
+
+      .mobile-menu {
+        display: block;
+      }
+
+      .topbar {
+        padding: 0 18px;
+      }
+
+      .content {
+        padding: 24px 18px;
+      }
+
+      .info-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .country-row {
+        flex-direction: column;
+      }
+
+      .profile-name {
+        display: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+
+    <div class="brand">
+      <div class="brand-mark">S</div>
+      <div class="brand-name">
+        Scholar<span>Matched</span>
+      </div>
+    </div>
+
+    <nav class="nav">
+
+      <a class="nav-link" href="home.html">
+        <span class="nav-icon">⌂</span>
+        Dashboard
+      </a>
+
+      <a class="nav-link" href="notifications.html">
+        <span class="nav-icon">♢</span>
+        Notifications
+      </a>
+
+      <a class="nav-link" href="advisor.html">
+        <span class="nav-icon">◉</span>
+        Advisor
+      </a>
+
+      <a class="nav-link" href="sop-reviewer.html">
+        <span class="nav-icon">✎</span>
+        SOP Reviewer
+      </a>
+
+      <a class="nav-link" href="tracker.html">
+        <span class="nav-icon">▣</span>
+        Application Tracker
+      </a>
+
+      <a class="nav-link" href="checklist.html">
+        <span class="nav-icon">✓</span>
+        Checklist
+      </a>
+
+      <a class="nav-link" href="templates.html">
+        <span class="nav-icon">▤</span>
+        Templates
+      </a>
+
+      <a class="nav-link active" href="visa-travel.html">
+        <span class="nav-icon">✈</span>
+        Visa & Travel
+      </a>
+
+      <a class="nav-link" href="profile.html">
+        <span class="nav-icon">♙</span>
+        Profile
+      </a>
+
+      <a class="nav-link" href="referral.html">
+        <span class="nav-icon">↗</span>
+        Referral
+      </a>
+
+      <a class="nav-link" href="index.html">
+        <span class="nav-icon">◫</span>
+        Public Website
+      </a>
+
+    </nav>
+
+    <div class="sidebar-bottom">
+      <button class="nav-link logout" onclick="logout()">
+        <span class="nav-icon">↪</span>
+        Logout
+      </button>
+    </div>
+
+  </aside>
+
+  <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <header class="topbar">
+
+      <div class="topbar-left">
+        <button class="mobile-menu" onclick="toggleSidebar()">☰</button>
+        <div class="topbar-title">
+          Visa & Travel Planning
+        </div>
+      </div>
+
+      <div class="profile-mini">
+        <div class="profile-name" id="profileName">
+          Student
+        </div>
+
+        <div class="avatar" id="avatar">
+          S
+        </div>
+      </div>
+
+    </header>
+
+
+    <section class="content">
+
+      <div class="page-header">
+        <h1>Visa & Travel</h1>
+
+        <p>
+          Prepare for your journey after receiving admission or a
+          scholarship. Organize visa documents, travel preparation,
+          accommodation, and arrival tasks in one place.
+        </p>
+      </div>
+
+
+      <!-- COUNTRY -->
+      <div class="country-card">
+
+        <h2>Choose your destination</h2>
+
+        <p>
+          Select your study destination to organize the relevant
+          visa and travel preparation steps.
+        </p>
+
+        <div class="country-row">
+
+          <select class="country-select" id="country">
+            <option value="">Select country</option>
+            <option>Germany</option>
+            <option>United Kingdom</option>
+            <option>United States</option>
+            <option>Canada</option>
+            <option>Australia</option>
+            <option>France</option>
+            <option>Italy</option>
+            <option>Netherlands</option>
+            <option>Sweden</option>
+            <option>Finland</option>
+            <option>Other</option>
+          </select>
+
+          <button class="primary-btn" onclick="saveDestination()">
+            Save Destination
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <!-- INFORMATION -->
+      <h2 class="section-title">
+        Visa Preparation
+      </h2>
+
+      <div class="info-grid">
+
+        <div class="info-card">
+
+          <div class="info-icon">▣</div>
+
+          <h3>Visa Documents</h3>
+
+          <p>
+            Organize your passport, admission letter, financial
+            documentation, insurance, photographs, and other
+            destination-specific requirements.
+          </p>
+
+        </div>
+
+
+        <div class="info-card">
+
+          <div class="info-icon">€</div>
+
+          <h3>Financial Proof</h3>
+
+          <p>
+            Keep track of the financial evidence required for your
+            student visa and understand which documents need to be
+            prepared before submission.
+          </p>
+
+        </div>
+
+
+        <div class="info-card">
+
+          <div class="info-icon">◷</div>
+
+          <h3>Appointment Planning</h3>
+
+          <p>
+            Record visa appointment dates and leave sufficient time
+            for document preparation and application processing.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <!-- CHECKLIST -->
+      <h2 class="section-title">
+        Visa Preparation Checklist
+      </h2>
+
+      <div class="checklist-card">
+
+        <label class="check-item">
+          <input
+            type="checkbox"
+            class="check-box"
+            data-key="passport"
+          >
+
+          <div class="check-text">
+            <strong>Valid passport</strong>
+            <span>Check validity and available blank pages.</span>
+          </div>
+
+          <span class="status">Required</span>
+        </label>
+
+
+        <label class="check-item">
+          <input
+            type="checkbox"
+            class="check-box"
+            data-key="admission"
+          >
+
+          <div class="check-text">
+            <strong>Admission / scholarship letter</strong>
+            <span>Keep the official university or scholarship document.</span>
+          </div>
+
+          <span class="status">Required</span>
+        </label>
+
+
+        <label class="check-item">
+          <input
+            type="checkbox"
+            class="check-box"
+            data-key="financial"
+          >
+
+          <div class="check-text">
+            <strong>Financial documents</strong>
+            <span>Prepare the financial evidence applicable to your destination.</span>
+          </div>
+
+          <span class="status">Important</span>
+        </label>
+
+
+        <label class="check-item">
+          <input
+            type="checkbox"
+            class="check-box"
+            data-key="insurance"
+          >
+
+          <div class="check-text">
+            <strong>Health insurance</strong>
+            <span>Check the insurance requirement for your destination.</span>
+          </div>
+
+          <span class="status">Required</span>
+        </label>
+
+
+        <label class="check-item">
+          <input
+            type="checkbox"
+            class="check-box"
+            data-key="photos"
+          >
+
+          <div class="check-text">
+            <strong>Passport photographs</strong>
+            <span>Prepare photographs according to the required specifications.</span>
+          </div>
+
+          <span class="status">Required</span>
+        </label>
+
+
+        <label class="check-item">
+          <input
+            type="checkbox"
+            class="check-box"
+            data-key="appointment"
+          >
+
+          <div class="check-text">
+            <strong>Visa appointment</strong>
+            <span>Book or record your appointment when applicable.</span>
+          </div>
+
+          <span class="status">Planning</span>
+        </label>
+
+      </div>
+
+
+      <!-- TRAVEL -->
+      <h2 class="section-title">
+        Travel Preparation
+      </h2>
+
+      <div class="travel-grid">
+
+        <div class="travel-card">
+
+          <h3>Suggested Timeline</h3>
+
+          <div class="timeline">
+
+            <div class="timeline-item">
+              <div class="timeline-dot"></div>
+
+              <strong>Receive admission</strong>
+
+              <span>
+                Save your official admission and scholarship documents.
+              </span>
+            </div>
+
+
+            <div class="timeline-item">
+              <div class="timeline-dot"></div>
+
+              <strong>Prepare visa documents</strong>
+
+              <span>
+                Collect financial, insurance, passport, and academic documents.
+              </span>
+            </div>
+
+
+            <div class="timeline-item">
+              <div class="timeline-dot"></div>
+
+              <strong>Apply for visa</strong>
+
+              <span>
+                Submit the required application and attend your appointment.
+              </span>
+            </div>
+
+
+            <div class="timeline-item">
+              <div class="timeline-dot"></div>
+
+              <strong>Arrange accommodation</strong>
+
+              <span>
+                Confirm university housing or another suitable accommodation.
+              </span>
+            </div>
+
+
+            <div class="timeline-item">
+              <div class="timeline-dot"></div>
+
+              <strong>Plan your journey</strong>
+
+              <span>
+                Arrange flights, local transport, documents, and arrival essentials.
+              </span>
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="travel-card">
+
+          <h3>Travel Budget</h3>
+
+          <div class="budget-list">
+
+            <div class="budget-row">
+              <span>Visa fee</span>
+              <strong>—</strong>
+            </div>
+
+            <div class="budget-row">
+              <span>Insurance</span>
+              <strong>—</strong>
+            </div>
+
+            <div class="budget-row">
+              <span>Flight</span>
+              <strong>—</strong>
+            </div>
+
+            <div class="budget-row">
+              <span>Accommodation</span>
+              <strong>—</strong>
+            </div>
+
+            <div class="budget-row">
+              <span>Local transport</span>
+              <strong>—</strong>
+            </div>
+
+            <div class="budget-row">
+              <span>Total</span>
+              <strong id="totalBudget">—</strong>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <script>
+
+    /* PROFILE */
+
+    function loadProfile() {
+
+      try {
+
+        const data =
+          JSON.parse(
+            localStorage.getItem("onboardingData")
+          );
+
+        if (!data) return;
+
+        const name =
+          data.name ||
+          data.fullName ||
+          data.full_name ||
+          "Student";
+
+        document.getElementById("profileName")
+          .textContent = name;
+
+        const initials =
+          name
+            .split(" ")
+            .filter(Boolean)
+            .slice(0, 2)
+            .map(x => x[0])
+            .join("")
+            .toUpperCase();
+
+        document.getElementById("avatar")
+          .textContent = initials || "S";
+
+      } catch (error) {
+
+        console.log("Profile data unavailable.");
+
+      }
+
+    }
+
+
+    /* DESTINATION */
+
+    function saveDestination() {
+
+      const country =
+        document.getElementById("country").value;
+
+      if (!country) {
+
+        alert("Please select a destination country.");
+
+        return;
+      }
+
+      localStorage.setItem(
+        "visaDestination",
+        country
+      );
+
+      alert(
+        "Destination saved: " + country
+      );
+
+    }
+
+
+    function loadDestination() {
+
+      const saved =
+        localStorage.getItem(
+          "visaDestination"
+        );
+
+      if (saved) {
+
+        document.getElementById("country")
+          .value = saved;
+
+      }
+
+    }
+
+
+    /* CHECKLIST */
+
+    function loadChecklist() {
+
+      document
+        .querySelectorAll(".check-box")
+        .forEach(box => {
+
+          const key =
+            "visaChecklist_" + box.dataset.key;
+
+          box.checked =
+            localStorage.getItem(key) === "true";
+
+          box.addEventListener(
+            "change",
+            function() {
+
+              localStorage.setItem(
+                key,
+                box.checked
+              );
+
+            }
+          );
+
+        });
+
+    }
+
+
+    /* SIDEBAR */
+
+    function toggleSidebar() {
+
+      document
+        .getElementById("sidebar")
+        .classList.toggle("open");
+
+      document
+        .getElementById("overlay")
+        .classList.toggle("open");
+
+    }
+
+
+    /* LOGOUT */
+
+    function logout() {
+
+      localStorage.removeItem(
+        "onboardingData"
+      );
+
+      window.location.href =
+        "index.html";
+
+    }
+
+
+    loadProfile();
+    loadDestination();
+    loadChecklist();
+
+  </script>
+
+</body>
+</html>

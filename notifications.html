@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Notifications — ScholarMatched</title>
+
+    <meta
+        name="description"
+        content="ScholarMatched notifications and scholarship updates."
+    >
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --primary: #26736b;
+            --primary-dark: #1d5c55;
+            --background: #f8faf9;
+            --white: #ffffff;
+            --text: #1a2e2c;
+            --muted: #64748b;
+            --border: #e2e8f0;
+            --light-green: #e8f3f1;
+        }
+
+        body {
+            font-family: Inter, Arial, sans-serif;
+            background: var(--background);
+            color: var(--text);
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* =========================
+           LAYOUT
+        ========================= */
+
+        .app {
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* =========================
+           SIDEBAR
+        ========================= */
+
+        .sidebar {
+            width: 250px;
+            min-height: 100vh;
+
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+
+            background: var(--white);
+            border-right: 1px solid var(--border);
+
+            padding: 24px 16px;
+            overflow-y: auto;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            padding: 0 10px;
+            margin-bottom: 35px;
+        }
+
+        .logo-mark {
+            width: 38px;
+            height: 38px;
+
+            border-radius: 11px;
+
+            background: var(--primary);
+            color: white;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+        .logo-text {
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+        .nav-title {
+            padding: 0 12px;
+            margin-bottom: 10px;
+
+            color: #94a3b8;
+
+            font-size: 11px;
+            font-weight: 700;
+
+            text-transform: uppercase;
+            letter-spacing: .08em;
+        }
+
+        .nav {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            padding: 11px 12px;
+
+            border-radius: 10px;
+
+            color: var(--muted);
+
+            font-size: 14px;
+            font-weight: 600;
+
+            transition: .2s;
+        }
+
+        .nav-link:hover {
+            background: var(--light-green);
+            color: var(--primary);
+        }
+
+        .nav-link.active {
+            background: var(--light-green);
+            color: var(--primary);
+        }
+
+        .nav-icon {
+            width: 20px;
+            text-align: center;
+            font-size: 17px;
+        }
+
+        .sidebar-bottom {
+            margin-top: 35px;
+            padding-top: 20px;
+
+            border-top: 1px solid var(--border);
+        }
+
+        .logout {
+            width: 100%;
+
+            border: none;
+            background: transparent;
+
+            cursor: pointer;
+            text-align: left;
+        }
+
+        /* =========================
+           MAIN
+        ========================= */
+
+        .main {
+            width: calc(100% - 250px);
+            margin-left: 250px;
+
+            min-height: 100vh;
+        }
+
+        /* =========================
+           TOP BAR
+        ========================= */
+
+        .topbar {
+            height: 72px;
+
+            background: white;
+            border-bottom: 1px solid var(--border);
+
+            padding: 0 32px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            position: sticky;
+            top: 0;
+
+            z-index: 20;
+        }
+
+        .mobile-menu {
+            display: none;
+
+            border: none;
+            background: transparent;
+
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .profile-mini {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .avatar {
+            width: 38px;
+            height: 38px;
+
+            border-radius: 50%;
+
+            background: #d9ece9;
+            color: var(--primary);
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-weight: 800;
+        }
+
+        .user-name {
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .user-label {
+            font-size: 11px;
+            color: var(--muted);
+        }
+
+        /* =========================
+           CONTENT
+        ========================= */
+
+        .content {
+            max-width: 1200px;
+            margin: auto;
+
+            padding: 35px 32px 60px;
+        }
+
+        .page-header {
+            margin-bottom: 28px;
+        }
+
+        .page-header h1 {
+            font-size: 30px;
+            letter-spacing: -.03em;
+            margin-bottom: 8px;
+        }
+
+        .page-header p {
+            color: var(--muted);
+            font-size: 15px;
+        }
+
+        /* =========================
+           NOTIFICATION ACTIONS
+        ========================= */
+
+        .actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            margin-bottom: 18px;
+        }
+
+        .actions h2 {
+            font-size: 18px;
+        }
+
+        .mark-read {
+            border: none;
+            background: transparent;
+
+            color: var(--primary);
+
+            font-size: 13px;
+            font-weight: 700;
+
+            cursor: pointer;
+        }
+
+        /* =========================
+           NOTIFICATION CARDS
+        ========================= */
+
+        .notifications {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .notification-card {
+            background: white;
+
+            border: 1px solid var(--border);
+            border-radius: 16px;
+
+            padding: 20px;
+
+            display: flex;
+            gap: 16px;
+
+            transition: .2s;
+        }
+
+        .notification-card:hover {
+            border-color: #b8d8d3;
+            box-shadow: 0 5px 18px rgba(0,0,0,.04);
+        }
+
+        .notification-card.unread {
+            border-left: 4px solid var(--primary);
+        }
+
+        .notification-icon {
+            width: 45px;
+            height: 45px;
+
+            flex-shrink: 0;
+
+            border-radius: 12px;
+
+            background: var(--light-green);
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 20px;
+        }
+
+        .notification-content {
+            flex: 1;
+        }
+
+        .notification-title {
+            font-size: 15px;
+            font-weight: 750;
+
+            margin-bottom: 5px;
+        }
+
+        .notification-text {
+            color: var(--muted);
+
+            font-size: 13px;
+            line-height: 1.6;
+
+            margin-bottom: 7px;
+        }
+
+        .notification-time {
+            color: #94a3b8;
+            font-size: 11px;
+        }
+
+        .unread-dot {
+            width: 8px;
+            height: 8px;
+
+            flex-shrink: 0;
+
+            margin-top: 7px;
+
+            border-radius: 50%;
+            background: var(--primary);
+        }
+
+        /* =========================
+           EMPTY STATE
+        ========================= */
+
+        .empty-state {
+            display: none;
+
+            background: white;
+
+            border: 1px solid var(--border);
+            border-radius: 18px;
+
+            padding: 60px 25px;
+
+            text-align: center;
+        }
+
+        .empty-icon {
+            width: 60px;
+            height: 60px;
+
+            margin: 0 auto 15px;
+
+            border-radius: 50%;
+
+            background: var(--light-green);
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 26px;
+        }
+
+        .empty-state h3 {
+            margin-bottom: 7px;
+        }
+
+        .empty-state p {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        /* =========================
+           MOBILE
+        ========================= */
+
+        @media (max-width: 800px) {
+
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform .25s;
+                z-index: 100;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main {
+                width: 100%;
+                margin-left: 0;
+            }
+
+            .mobile-menu {
+                display: block;
+            }
+
+            .topbar {
+                padding: 0 18px;
+            }
+
+            .content {
+                padding: 25px 18px 45px;
+            }
+
+            .user-name,
+            .user-label {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- =========================
+         SIDEBAR
+    ========================== -->
+
+    <aside class="sidebar" id="sidebar">
+
+        <a href="home.html" class="logo">
+
+            <div class="logo-mark">
+                S
+            </div>
+
+            <div class="logo-text">
+                ScholarMatched
+            </div>
+
+        </a>
+
+
+        <div class="nav-title">
+            Dashboard
+        </div>
+
+
+        <nav class="nav">
+
+            <a href="home.html" class="nav-link">
+                <span class="nav-icon">⌂</span>
+                Dashboard
+            </a>
+
+            <a href="notifications.html"
+               class="nav-link active">
+
+                <span class="nav-icon">🔔</span>
+                Notifications
+
+            </a>
+
+            <a href="advisor.html" class="nav-link">
+                <span class="nav-icon">✦</span>
+                AI Advisor
+            </a>
+
+            <a href="sop-reviewer.html" class="nav-link">
+                <span class="nav-icon">📝</span>
+                SOP Reviewer
+            </a>
+
+            <a href="tracker.html" class="nav-link">
+                <span class="nav-icon">📊</span>
+                Application Tracker
+            </a>
+
+            <a href="checklist.html" class="nav-link">
+                <span class="nav-icon">✓</span>
+                Checklist
+            </a>
+
+            <a href="templates.html" class="nav-link">
+                <span class="nav-icon">▤</span>
+                Templates
+            </a>
+
+            <a href="visa-travel.html" class="nav-link">
+                <span class="nav-icon">✈</span>
+                Visa & Travel
+            </a>
+
+            <a href="profile.html" class="nav-link">
+                <span class="nav-icon">👤</span>
+                My Profile
+            </a>
+
+            <a href="referral.html" class="nav-link">
+                <span class="nav-icon">↗</span>
+                Referrals
+            </a>
+
+        </nav>
+
+
+        <div class="sidebar-bottom">
+
+            <a href="index.html" class="nav-link">
+
+                <span class="nav-icon">←</span>
+                Public Landing Page
+
+            </a>
+
+
+            <button
+                class="nav-link logout"
+                onclick="logout()"
+            >
+
+                <span class="nav-icon">↪</span>
+                Log out
+
+            </button>
+
+        </div>
+
+    </aside>
+
+
+    <!-- =========================
+         MAIN
+    ========================== -->
+
+    <main class="main">
+
+        <header class="topbar">
+
+            <button
+                class="mobile-menu"
+                onclick="toggleSidebar()"
+            >
+                ☰
+            </button>
+
+
+            <div></div>
+
+
+            <div class="topbar-right">
+
+                <a href="profile.html"
+                   class="profile-mini">
+
+                    <div class="avatar" id="avatar">
+                        S
+                    </div>
+
+                    <div>
+
+                        <div
+                            class="user-name"
+                            id="userName"
+                        >
+                            Student
+                        </div>
+
+                        <div class="user-label">
+                            My account
+                        </div>
+
+                    </div>
+
+                </a>
+
+            </div>
+
+        </header>
+
+
+        <!-- =========================
+             PAGE CONTENT
+        ========================== -->
+
+        <div class="content">
+
+            <section class="page-header">
+
+                <h1>
+                    Notifications
+                </h1>
+
+                <p>
+                    Stay up to date with your scholarships,
+                    applications and important updates.
+                </p>
+
+            </section>
+
+
+            <section class="actions">
+
+                <h2>
+                    Recent notifications
+                </h2>
+
+                <button
+                    class="mark-read"
+                    onclick="markAllRead()"
+                >
+                    Mark all as read
+                </button>
+
+            </section>
+
+
+            <!-- NOTIFICATIONS -->
+
+            <section
+                class="notifications"
+                id="notifications"
+            >
+
+                <article class="notification-card unread">
+
+                    <div class="notification-icon">
+                        🎓
+                    </div>
+
+                    <div class="notification-content">
+
+                        <div class="notification-title">
+                            New scholarship match
+                        </div>
+
+                        <div class="notification-text">
+                            A new scholarship may match your
+                            academic profile and preferences.
+                        </div>
+
+                        <div class="notification-time">
+                            Recently
+                        </div>
+
+                    </div>
+
+                    <div class="unread-dot"></div>
+
+                </article>
+
+
+                <article class="notification-card unread">
+
+                    <div class="notification-icon">
+                        ⏰
+                    </div>
+
+                    <div class="notification-content">
+
+                        <div class="notification-title">
+                            Scholarship deadline reminder
+                        </div>
+
+                        <div class="notification-text">
+                            You have an upcoming scholarship
+                            deadline. Review your application
+                            before submitting.
+                        </div>
+
+                        <div class="notification-time">
+                            Recently
+                        </div>
+
+                    </div>
+
+                    <div class="unread-dot"></div>
+
+                </article>
+
+
+                <article class="notification-card">
+
+                    <div class="notification-icon">
+                        📝
+                    </div>
+
+                    <div class="notification-content">
+
+                        <div class="notification-title">
+                            Complete your SOP
+                        </div>
+
+                        <div class="notification-text">
+                            Your SOP reviewer is available to
+                            help you review and improve your
+                            Statement of Purpose.
+                        </div>
+
+                        <div class="notification-time">
+                            Recently
+                        </div>
+
+                    </div>
+
+                </article>
+
+
+                <article class="notification-card">
+
+                    <div class="notification-icon">
+                        👤
+                    </div>
+
+                    <div class="notification-content">
+
+                        <div class="notification-title">
+                            Complete your profile
+                        </div>
+
+                        <div class="notification-text">
+                            Add more information to your profile
+                            to improve scholarship matching.
+                        </div>
+
+                        <div class="notification-time">
+                            Recently
+                        </div>
+
+                    </div>
+
+                </article>
+
+            </section>
+
+
+            <!-- EMPTY STATE -->
+
+            <section
+                class="empty-state"
+                id="emptyState"
+            >
+
+                <div class="empty-icon">
+                    🔔
+                </div>
+
+                <h3>
+                    You're all caught up
+                </h3>
+
+                <p>
+                    There are no unread notifications.
+                </p>
+
+            </section>
+
+        </div>
+
+    </main>
+
+</div>
+
+
+<script>
+
+    /* =========================
+       LOAD USER
+    ========================== */
+
+    function loadUser() {
+
+        const savedData =
+            localStorage.getItem("onboardingData");
+
+        if (!savedData) {
+            return;
+        }
+
+        try {
+
+            const data =
+                JSON.parse(savedData);
+
+            const name =
+                data.name ||
+                data.firstName ||
+                data.fullName ||
+                "";
+
+            if (name) {
+
+                document.getElementById(
+                    "userName"
+                ).textContent = name;
+
+                document.getElementById(
+                    "avatar"
+                ).textContent =
+                    name.charAt(0).toUpperCase();
+
+            }
+
+        } catch (error) {
+
+            console.log(
+                "Could not load onboarding data."
+            );
+
+        }
+
+    }
+
+
+    /* =========================
+       MARK ALL AS READ
+    ========================== */
+
+    function markAllRead() {
+
+        const unread =
+            document.querySelectorAll(
+                ".notification-card.unread"
+            );
+
+        unread.forEach(card => {
+
+            card.classList.remove("unread");
+
+            const dot =
+                card.querySelector(".unread-dot");
+
+            if (dot) {
+                dot.remove();
+            }
+
+        });
+
+
+        const remaining =
+            document.querySelectorAll(
+                ".notification-card.unread"
+            );
+
+        if (remaining.length === 0) {
+
+            document.getElementById(
+                "emptyState"
+            ).style.display = "block";
+
+        }
+
+    }
+
+
+    /* =========================
+       MOBILE MENU
+    ========================== */
+
+    function toggleSidebar() {
+
+        document
+            .getElementById("sidebar")
+            .classList.toggle("open");
+
+    }
+
+
+    /* =========================
+       LOGOUT
+    ========================== */
+
+    function logout() {
+
+        localStorage.removeItem(
+            "onboardingData"
+        );
+
+        window.location.href =
+            "index.html";
+
+    }
+
+
+    /* =========================
+       INIT
+    ========================== */
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        loadUser
+    );
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile - ScholarMatched</title>
+
+  <style>
+    :root {
+      --bg: #f8faf9;
+      --primary: #26736b;
+      --primary-dark: #1e5f58;
+      --text: #1a2e2c;
+      --muted: #64748b;
+      --light-muted: #94a3b8;
+      --border: #e2e8f0;
+      --card: #ffffff;
+      --danger: #dc2626;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Inter, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    .app {
+      min-height: 100vh;
+      display: flex;
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+      width: 250px;
+      background: white;
+      border-right: 1px solid var(--border);
+      position: fixed;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand {
+      height: 72px;
+      display: flex;
+      align-items: center;
+      padding: 0 24px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .brand-mark {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      background: var(--primary);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      margin-right: 10px;
+    }
+
+    .brand-name {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--text);
+    }
+
+    .nav {
+      padding: 18px 12px;
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .nav-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--light-muted);
+      font-weight: 700;
+      padding: 0 12px 9px;
+    }
+
+    .nav a {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 11px 12px;
+      margin-bottom: 3px;
+      border-radius: 9px;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      transition: .15s;
+    }
+
+    .nav a:hover {
+      background: #f1f7f6;
+      color: var(--primary);
+    }
+
+    .nav a.active {
+      background: #e8f3f1;
+      color: var(--primary);
+    }
+
+    .nav-icon {
+      width: 20px;
+      text-align: center;
+      font-size: 16px;
+    }
+
+    .sidebar-bottom {
+      padding: 14px 12px;
+      border-top: 1px solid var(--border);
+    }
+
+    .logout {
+      width: 100%;
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      padding: 11px 12px;
+      border-radius: 9px;
+      text-align: left;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .logout:hover {
+      background: #fef2f2;
+      color: var(--danger);
+    }
+
+    /* MAIN */
+    .main {
+      margin-left: 250px;
+      width: calc(100% - 250px);
+      min-height: 100vh;
+    }
+
+    .topbar {
+      height: 72px;
+      background: white;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .mobile-menu {
+      display: none;
+      border: 0;
+      background: transparent;
+      font-size: 24px;
+      cursor: pointer;
+      color: var(--text);
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-left: auto;
+    }
+
+    .user-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: #dcefeb;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 14px;
+    }
+
+    .content {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 34px 32px 60px;
+    }
+
+    .page-heading {
+      margin-bottom: 26px;
+    }
+
+    .page-heading h1 {
+      font-size: 30px;
+      letter-spacing: -0.03em;
+      margin-bottom: 6px;
+    }
+
+    .page-heading p {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    /* PROFILE HEADER */
+    .profile-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      margin-bottom: 22px;
+    }
+
+    .profile-header {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .large-avatar {
+      width: 82px;
+      height: 82px;
+      border-radius: 50%;
+      background: #dcefeb;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+
+    .profile-header h2 {
+      font-size: 22px;
+      margin-bottom: 5px;
+    }
+
+    .profile-header p {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .profile-status {
+      margin-left: auto;
+      padding: 7px 12px;
+      background: #e8f3f1;
+      color: var(--primary);
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    /* GRID */
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+    }
+
+    .card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+    }
+
+    .card.full {
+      grid-column: 1 / -1;
+    }
+
+    .card h3 {
+      font-size: 17px;
+      margin-bottom: 5px;
+    }
+
+    .card-description {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group:last-child {
+      margin-bottom: 0;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 7px;
+      color: var(--text);
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      border: 1px solid #d2d5d8;
+      border-radius: 9px;
+      padding: 11px 12px;
+      background: white;
+      color: var(--text);
+      outline: none;
+      font-size: 14px;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(38, 115, 107, .09);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .two-columns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+
+    .save-area {
+      margin-top: 22px;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .save-message {
+      color: var(--primary);
+      font-size: 13px;
+      display: none;
+    }
+
+    .btn {
+      border: 0;
+      border-radius: 9px;
+      padding: 11px 20px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+    }
+
+    .danger-zone {
+      border: 1px solid #fecaca;
+      background: #fffafa;
+    }
+
+    .danger-zone h3 {
+      color: var(--danger);
+    }
+
+    .danger-zone p {
+      color: var(--muted);
+      font-size: 13px;
+      margin: 6px 0 15px;
+    }
+
+    .btn-danger {
+      background: white;
+      color: var(--danger);
+      border: 1px solid #fca5a5;
+    }
+
+    /* MOBILE */
+    .overlay {
+      display: none;
+    }
+
+    @media (max-width: 900px) {
+      .sidebar {
+        transform: translateX(-100%);
+        transition: transform .2s ease;
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .overlay.show {
+        display: block;
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, .35);
+        z-index: 90;
+      }
+
+      .main {
+        margin-left: 0;
+        width: 100%;
+      }
+
+      .mobile-menu {
+        display: block;
+      }
+
+      .topbar {
+        padding: 0 18px;
+      }
+
+      .content {
+        padding: 26px 18px 50px;
+      }
+    }
+
+    @media (max-width: 650px) {
+      .grid,
+      .two-columns {
+        grid-template-columns: 1fr;
+      }
+
+      .card.full {
+        grid-column: auto;
+      }
+
+      .profile-header {
+        align-items: flex-start;
+      }
+
+      .profile-status {
+        display: none;
+      }
+
+      .user-name {
+        display: none;
+      }
+
+      .page-heading h1 {
+        font-size: 26px;
+      }
+
+      .profile-card,
+      .card {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+
+    <div class="brand">
+      <div class="brand-mark">S</div>
+      <div class="brand-name">ScholarMatched</div>
+    </div>
+
+    <nav class="nav">
+
+      <div class="nav-label">Workspace</div>
+
+      <a href="home.html">
+        <span class="nav-icon">⌂</span>
+        Dashboard
+      </a>
+
+      <a href="notifications.html">
+        <span class="nav-icon">♢</span>
+        Notifications
+      </a>
+
+      <a href="advisor.html">
+        <span class="nav-icon">✦</span>
+        Advisor
+      </a>
+
+      <a href="sop-reviewer.html">
+        <span class="nav-icon">▤</span>
+        SOP Reviewer
+      </a>
+
+      <a href="tracker.html">
+        <span class="nav-icon">✓</span>
+        Application Tracker
+      </a>
+
+      <a href="checklist.html">
+        <span class="nav-icon">☑</span>
+        Checklist
+      </a>
+
+      <a href="templates.html">
+        <span class="nav-icon">▧</span>
+        Templates
+      </a>
+
+      <a href="visa-travel.html">
+        <span class="nav-icon">✈</span>
+        Visa & Travel
+      </a>
+
+      <a href="profile.html" class="active">
+        <span class="nav-icon">●</span>
+        Profile
+      </a>
+
+      <a href="referral.html">
+        <span class="nav-icon">↗</span>
+        Referral
+      </a>
+
+      <div class="nav-label" style="margin-top:18px;">Website</div>
+
+      <a href="index.html">
+        <span class="nav-icon">◉</span>
+        Public Website
+      </a>
+
+    </nav>
+
+    <div class="sidebar-bottom">
+      <button class="logout" onclick="logout()">
+        ↪ &nbsp; Log out
+      </button>
+    </div>
+
+  </aside>
+
+  <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <header class="topbar">
+
+      <button class="mobile-menu" onclick="toggleSidebar()">☰</button>
+
+      <div class="topbar-right">
+        <span class="user-name" id="topName">Student</span>
+        <div class="avatar" id="topAvatar">S</div>
+      </div>
+
+    </header>
+
+    <section class="content">
+
+      <div class="page-heading">
+        <h1>Profile</h1>
+        <p>Manage your personal information and scholarship preferences.</p>
+      </div>
+
+      <!-- PROFILE SUMMARY -->
+      <div class="profile-card">
+
+        <div class="profile-header">
+
+          <div class="large-avatar" id="largeAvatar">S</div>
+
+          <div>
+            <h2 id="profileName">Student</h2>
+            <p id="profileEmail">Update your profile information below.</p>
+          </div>
+
+          <div class="profile-status">
+            Profile active
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="grid">
+
+        <!-- PERSONAL INFORMATION -->
+        <div class="card">
+
+          <h3>Personal Information</h3>
+          <p class="card-description">
+            Basic information used to personalize your scholarship matches.
+          </p>
+
+          <div class="form-group">
+            <label for="fullName">Full Name</label>
+            <input
+              type="text"
+              id="fullName"
+              placeholder="Enter your full name"
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email Address</label>
+            <input
+              type="email"
+              id="email"
+              placeholder="Enter your email"
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="country">Country</label>
+            <input
+              type="text"
+              id="country"
+              placeholder="e.g. Pakistan"
+            >
+          </div>
+
+        </div>
+
+        <!-- ACADEMIC INFORMATION -->
+        <div class="card">
+
+          <h3>Academic Information</h3>
+          <p class="card-description">
+            Your academic background helps determine eligibility.
+          </p>
+
+          <div class="form-group">
+            <label for="degree">Current Degree</label>
+
+            <select id="degree">
+              <option value="">Select degree</option>
+              <option>High School</option>
+              <option>Bachelor's</option>
+              <option>Master's</option>
+              <option>PhD</option>
+              <option>Other</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="field">Field of Study</label>
+
+            <input
+              type="text"
+              id="field"
+              placeholder="e.g. Artificial Intelligence"
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="cgpa">GPA / CGPA</label>
+
+            <input
+              type="text"
+              id="cgpa"
+              placeholder="e.g. 3.8 / 4.0"
+            >
+          </div>
+
+        </div>
+
+        <!-- SCHOLARSHIP PREFERENCES -->
+        <div class="card full">
+
+          <h3>Scholarship Preferences</h3>
+
+          <p class="card-description">
+            Tell ScholarMatched what kind of opportunities you are looking for.
+          </p>
+
+          <div class="two-columns">
+
+            <div class="form-group">
+              <label for="studyLevel">Preferred Study Level</label>
+
+              <select id="studyLevel">
+                <option value="">Select level</option>
+                <option>Undergraduate</option>
+                <option>Master's</option>
+                <option>PhD</option>
+                <option>Postdoctoral</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="funding">Funding Preference</label>
+
+              <select id="funding">
+                <option value="">Select preference</option>
+                <option>Fully Funded</option>
+                <option>Partially Funded</option>
+                <option>Any Funding</option>
+              </select>
+            </div>
+
+          </div>
+
+          <div class="two-columns">
+
+            <div class="form-group">
+              <label for="destination">Preferred Destination</label>
+
+              <input
+                type="text"
+                id="destination"
+                placeholder="e.g. Germany, UK, Canada"
+              >
+            </div>
+
+            <div class="form-group">
+              <label for="interest">Research / Career Interest</label>
+
+              <input
+                type="text"
+                id="interest"
+                placeholder="e.g. AI, Cybersecurity, Data Science"
+              >
+            </div>
+
+          </div>
+
+          <div class="form-group">
+            <label for="goals">Academic / Career Goals</label>
+
+            <textarea
+              id="goals"
+              placeholder="Briefly describe what you want to achieve..."
+            ></textarea>
+          </div>
+
+          <div class="save-area">
+
+            <span class="save-message" id="saveMessage">
+              Profile saved successfully.
+            </span>
+
+            <button class="btn btn-primary" onclick="saveProfile()">
+              Save Changes
+            </button>
+
+          </div>
+
+        </div>
+
+        <!-- ACCOUNT -->
+        <div class="card full danger-zone">
+
+          <h3>Account</h3>
+
+          <p>
+            Your profile information is stored locally in this standalone version.
+          </p>
+
+          <button class="btn btn-danger" onclick="clearProfile()">
+            Clear Profile Data
+          </button>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+</div>
+
+<script>
+
+  /* -----------------------------
+     PROFILE STORAGE
+  ----------------------------- */
+
+  const fields = [
+    "fullName",
+    "email",
+    "country",
+    "degree",
+    "field",
+    "cgpa",
+    "studyLevel",
+    "funding",
+    "destination",
+    "interest",
+    "goals"
+  ];
+
+  function loadProfile() {
+
+    let saved = {};
+
+    try {
+      saved = JSON.parse(localStorage.getItem("scholarMatchedProfile")) || {};
+    } catch (error) {
+      saved = {};
+    }
+
+    /* Compatibility with existing onboardingData */
+    try {
+
+      const onboarding =
+        JSON.parse(localStorage.getItem("onboardingData")) || {};
+
+      if (!saved.fullName && onboarding.name) {
+        saved.fullName = onboarding.name;
+      }
+
+      if (!saved.email && onboarding.email) {
+        saved.email = onboarding.email;
+      }
+
+    } catch (error) {}
+
+    fields.forEach(field => {
+
+      const element = document.getElementById(field);
+
+      if (element && saved[field] !== undefined) {
+        element.value = saved[field];
+      }
+
+    });
+
+    updateProfileHeader(
+      saved.fullName || "Student",
+      saved.email || ""
+    );
+  }
+
+
+  function saveProfile() {
+
+    const profile = {};
+
+    fields.forEach(field => {
+
+      const element = document.getElementById(field);
+
+      if (element) {
+        profile[field] = element.value.trim();
+      }
+
+    });
+
+    localStorage.setItem(
+      "scholarMatchedProfile",
+      JSON.stringify(profile)
+    );
+
+    /* Keep common onboarding name in sync */
+    try {
+
+      const onboarding =
+        JSON.parse(localStorage.getItem("onboardingData")) || {};
+
+      onboarding.name = profile.fullName || onboarding.name || "Student";
+
+      if (profile.email) {
+        onboarding.email = profile.email;
+      }
+
+      localStorage.setItem(
+        "onboardingData",
+        JSON.stringify(onboarding)
+      );
+
+    } catch (error) {}
+
+    updateProfileHeader(
+      profile.fullName || "Student",
+      profile.email || ""
+    );
+
+    const message = document.getElementById("saveMessage");
+
+    message.style.display = "inline";
+
+    setTimeout(() => {
+      message.style.display = "none";
+    }, 2500);
+  }
+
+
+  function updateProfileHeader(name, email) {
+
+    const initials = getInitials(name);
+
+    document.getElementById("profileName").textContent = name;
+    document.getElementById("profileEmail").textContent =
+      email || "Manage your ScholarMatched profile";
+
+    document.getElementById("topName").textContent = name;
+
+    document.getElementById("topAvatar").textContent = initials;
+    document.getElementById("largeAvatar").textContent = initials;
+  }
+
+
+  function getInitials(name) {
+
+    if (!name || name === "Student") {
+      return "S";
+    }
+
+    const parts = name
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean);
+
+    if (parts.length === 1) {
+      return parts[0].substring(0, 2).toUpperCase();
+    }
+
+    return (
+      parts[0][0] +
+      parts[parts.length - 1][0]
+    ).toUpperCase();
+  }
+
+
+  function clearProfile() {
+
+    const confirmed =
+      confirm("Clear all saved profile information?");
+
+    if (!confirmed) return;
+
+    localStorage.removeItem("scholarMatchedProfile");
+
+    fields.forEach(field => {
+
+      const element = document.getElementById(field);
+
+      if (element) {
+        element.value = "";
+      }
+
+    });
+
+    updateProfileHeader("Student", "");
+  }
+
+
+  /* -----------------------------
+     MOBILE SIDEBAR
+  ----------------------------- */
+
+  function toggleSidebar() {
+
+    document
+      .getElementById("sidebar")
+      .classList.toggle("open");
+
+    document
+      .getElementById("overlay")
+      .classList.toggle("show");
+  }
+
+
+  function closeSidebar() {
+
+    document
+      .getElementById("sidebar")
+      .classList.remove("open");
+
+    document
+      .getElementById("overlay")
+      .classList.remove("show");
+  }
+
+
+  /* -----------------------------
+     LOGOUT
+  ----------------------------- */
+
+  function logout() {
+
+    localStorage.removeItem("onboardingData");
+
+    window.location.href = "index.html";
+  }
+
+
+  /* -----------------------------
+     INIT
+  ----------------------------- */
+
+  document.addEventListener("DOMContentLoaded", loadProfile);
+  window.addEventListener("scholarMatchedReady", loadProfile);
+
+</script>
+
+</body>
+</html>

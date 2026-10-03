@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ScholarMatched — Advisor</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Inter, Arial, sans-serif;
+      background: #f8faf9;
+      color: #1a2e2c;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .app {
+      min-height: 100vh;
+      display: flex;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 250px;
+      background: #ffffff;
+      border-right: 1px solid #e2e8f0;
+      padding: 24px 16px;
+      position: fixed;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      overflow-y: auto;
+      z-index: 100;
+    }
+
+    .logo {
+      font-size: 23px;
+      font-weight: 800;
+      color: #26736b;
+      padding: 4px 12px 28px;
+    }
+
+    .nav-section {
+      margin-bottom: 24px;
+    }
+
+    .nav-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      padding: 0 12px 8px;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 12px;
+      border-radius: 10px;
+      color: #64748b;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 3px;
+      transition: .2s;
+    }
+
+    .nav-link:hover {
+      background: #f0f7f5;
+      color: #26736b;
+    }
+
+    .nav-link.active {
+      background: #e8f3f1;
+      color: #26736b;
+    }
+
+    .nav-icon {
+      width: 20px;
+      text-align: center;
+      font-size: 17px;
+    }
+
+    .sidebar-bottom {
+      border-top: 1px solid #e2e8f0;
+      margin-top: 20px;
+      padding-top: 15px;
+    }
+
+    /* Main */
+    .main {
+      margin-left: 250px;
+      width: calc(100% - 250px);
+      min-height: 100vh;
+    }
+
+    .topbar {
+      height: 72px;
+      background: white;
+      border-bottom: 1px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+    }
+
+    .menu-button {
+      display: none;
+      border: 0;
+      background: none;
+      font-size: 24px;
+      cursor: pointer;
+    }
+
+    .page-area {
+      max-width: 1100px;
+      margin: auto;
+      padding: 40px 28px 60px;
+    }
+
+    .welcome {
+      margin-bottom: 30px;
+    }
+
+    .welcome h1 {
+      font-size: 30px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 8px;
+    }
+
+    .welcome p {
+      color: #64748b;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    /* Advisor */
+    .advisor-layout {
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 22px;
+    }
+
+    .card {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 18px;
+      padding: 24px;
+      box-shadow: 0 3px 18px rgba(0, 0, 0, .035);
+    }
+
+    .card h2 {
+      font-size: 19px;
+      margin-bottom: 8px;
+    }
+
+    .card-description {
+      color: #64748b;
+      font-size: 14px;
+      line-height: 1.6;
+      margin-bottom: 22px;
+    }
+
+    .chat-box {
+      height: 420px;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .messages {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      background: #fbfdfc;
+    }
+
+    .message {
+      max-width: 82%;
+      padding: 12px 15px;
+      border-radius: 14px;
+      margin-bottom: 14px;
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .message.advisor {
+      background: #edf6f4;
+      color: #1a2e2c;
+      border-bottom-left-radius: 4px;
+    }
+
+    .message.user {
+      background: #26736b;
+      color: white;
+      margin-left: auto;
+      border-bottom-right-radius: 4px;
+    }
+
+    .chat-input {
+      border-top: 1px solid #e2e8f0;
+      padding: 12px;
+      display: flex;
+      gap: 10px;
+      background: white;
+    }
+
+    .chat-input input {
+      flex: 1;
+      border: 1px solid #d2d5d8;
+      border-radius: 10px;
+      padding: 11px 13px;
+      outline: none;
+      font-size: 14px;
+    }
+
+    .chat-input input:focus {
+      border-color: #26736b;
+    }
+
+    .send-btn,
+    .primary-btn {
+      background: #26736b;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 11px 17px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .send-btn:hover,
+    .primary-btn:hover {
+      background: #1f625b;
+    }
+
+    /* Profile summary */
+    .profile-summary {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #e2e8f0;
+      margin-bottom: 20px;
+    }
+
+    .avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: #dceeea;
+      color: #26736b;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 17px;
+    }
+
+    .profile-summary h3 {
+      font-size: 15px;
+      margin-bottom: 3px;
+    }
+
+    .profile-summary p {
+      color: #64748b;
+      font-size: 12px;
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+      padding: 12px 0;
+      border-bottom: 1px solid #f1f5f9;
+      font-size: 13px;
+    }
+
+    .info-row span:first-child {
+      color: #64748b;
+    }
+
+    .info-row span:last-child {
+      font-weight: 700;
+      text-align: right;
+    }
+
+    .tips {
+      margin-top: 20px;
+      background: #f0f7f5;
+      border-radius: 12px;
+      padding: 15px;
+    }
+
+    .tips strong {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 6px;
+      color: #26736b;
+    }
+
+    .tips p {
+      font-size: 12px;
+      color: #64748b;
+      line-height: 1.5;
+    }
+
+    /* Mobile */
+    @media (max-width: 900px) {
+      .advisor-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        transform: translateX(-100%);
+        transition: .25s;
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .main {
+        margin-left: 0;
+        width: 100%;
+      }
+
+      .menu-button {
+        display: block;
+      }
+
+      .topbar {
+        padding: 0 18px;
+      }
+
+      .page-area {
+        padding: 28px 16px;
+      }
+
+      .welcome h1 {
+        font-size: 25px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+
+    <div class="logo">
+      ScholarMatched
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-title">Main</div>
+
+      <a href="home.html" class="nav-link">
+        <span class="nav-icon">⌂</span>
+        Dashboard
+      </a>
+
+      <a href="notifications.html" class="nav-link">
+        <span class="nav-icon">♢</span>
+        Notifications
+      </a>
+
+      <a href="advisor.html" class="nav-link active">
+        <span class="nav-icon">✦</span>
+        Advisor
+      </a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-title">Tools</div>
+
+      <a href="sop-reviewer.html" class="nav-link">
+        <span class="nav-icon">▤</span>
+        SOP Reviewer
+      </a>
+
+      <a href="tracker.html" class="nav-link">
+        <span class="nav-icon">✓</span>
+        Application Tracker
+      </a>
+
+      <a href="checklist.html" class="nav-link">
+        <span class="nav-icon">☑</span>
+        Checklist
+      </a>
+
+      <a href="templates.html" class="nav-link">
+        <span class="nav-icon">▣</span>
+        Templates
+      </a>
+
+      <a href="visa-travel.html" class="nav-link">
+        <span class="nav-icon">✈</span>
+        Visa & Travel
+      </a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-title">Account</div>
+
+      <a href="profile.html" class="nav-link">
+        <span class="nav-icon">♙</span>
+        Profile
+      </a>
+
+      <a href="referral.html" class="nav-link">
+        <span class="nav-icon">↗</span>
+        Referral
+      </a>
+    </div>
+
+    <div class="sidebar-bottom">
+      <a href="index.html" class="nav-link">
+        <span class="nav-icon">←</span>
+        Public Website
+      </a>
+
+      <a href="#" class="nav-link" onclick="logout()">
+        <span class="nav-icon">↪</span>
+        Logout
+      </a>
+    </div>
+
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <header class="topbar">
+      <button class="menu-button" onclick="toggleSidebar()">☰</button>
+
+      <div></div>
+
+      <div class="avatar" id="topAvatar">U</div>
+    </header>
+
+    <section class="page-area">
+
+      <div class="welcome">
+        <h1>Scholarship Advisor</h1>
+        <p>
+          Get personalized guidance for your scholarship search,
+          applications and study-abroad journey.
+        </p>
+      </div>
+
+      <div class="advisor-layout">
+
+        <!-- CHAT -->
+        <div class="card">
+
+          <h2>Ask your advisor</h2>
+
+          <p class="card-description">
+            Ask questions about scholarships, eligibility, applications,
+            documents, deadlines or your study-abroad plans.
+          </p>
+
+          <div class="chat-box">
+
+            <div class="messages" id="messages">
+
+              <div class="message advisor">
+                Hello! I'm your scholarship advisor. I can help you
+                understand scholarship requirements, application steps,
+                deadlines and documents.
+              </div>
+
+              <div class="message advisor">
+                What would you like help with today?
+              </div>
+
+            </div>
+
+            <form class="chat-input" onsubmit="sendMessage(event)">
+              <input
+                type="text"
+                id="messageInput"
+                placeholder="Ask your scholarship question..."
+                autocomplete="off"
+              >
+
+              <button class="send-btn" type="submit">
+                Send
+              </button>
+            </form>
+
+          </div>
+
+        </div>
+
+        <!-- PROFILE -->
+        <div class="card">
+
+          <h2>Your Profile</h2>
+
+          <p class="card-description">
+            Your advisor uses this information to provide more relevant
+            guidance.
+          </p>
+
+          <div class="profile-summary">
+
+            <div class="avatar" id="profileAvatar">
+              U
+            </div>
+
+            <div>
+              <h3 id="userName">Student</h3>
+              <p>ScholarMatched member</p>
+            </div>
+
+          </div>
+
+          <div class="info-row">
+            <span>Degree</span>
+            <span id="degree">Not set</span>
+          </div>
+
+          <div class="info-row">
+            <span>Field</span>
+            <span id="field">Not set</span>
+          </div>
+
+          <div class="info-row">
+            <span>Destination</span>
+            <span id="destination">Not set</span>
+          </div>
+
+          <div class="tips">
+            <strong>Advisor tip</strong>
+            <p>
+              Keep your academic profile and scholarship preferences
+              updated so your guidance can become more specific.
+            </p>
+          </div>
+
+          <br>
+
+          <a href="profile.html" class="primary-btn">
+            Update Profile
+          </a>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+</div>
+
+<script>
+
+  /* Load onboarding/profile information */
+  function loadUser() {
+
+    const data =
+      JSON.parse(localStorage.getItem("onboardingData") || "{}");
+
+    const name =
+      data.name ||
+      data.firstName ||
+      data.fullName ||
+      "Student";
+
+    document.getElementById("userName").textContent = name;
+
+    const initials = name
+      .split(" ")
+      .map(word => word.charAt(0))
+      .join("")
+      .substring(0, 2)
+      .toUpperCase();
+
+    document.getElementById("profileAvatar").textContent =
+      initials || "U";
+
+    document.getElementById("topAvatar").textContent =
+      initials || "U";
+
+    /*
+      These values will automatically display if your onboarding
+      uses these property names.
+    */
+
+    document.getElementById("degree").textContent =
+      data.degree || data.degreeLevel || "Not set";
+
+    document.getElementById("field").textContent =
+      data.field || data.studyField || "Not set";
+
+    document.getElementById("destination").textContent =
+      data.destination || data.country || "Not set";
+  }
+
+
+  /* Simple local advisor demo */
+  function sendMessage(event) {
+
+    event.preventDefault();
+
+    const input =
+      document.getElementById("messageInput");
+
+    const text = input.value.trim();
+
+    if (!text) return;
+
+    const messages =
+      document.getElementById("messages");
+
+    const userMessage =
+      document.createElement("div");
+
+    userMessage.className = "message user";
+    userMessage.textContent = text;
+
+    messages.appendChild(userMessage);
+
+    input.value = "";
+
+    messages.scrollTop = messages.scrollHeight;
+
+    /*
+      Placeholder response.
+
+      Later this can be replaced with your own:
+      FastAPI backend + LLM/RAG system.
+    */
+
+    setTimeout(() => {
+
+      const advisorMessage =
+        document.createElement("div");
+
+      advisorMessage.className = "message advisor";
+
+      advisorMessage.textContent =
+        "I can help you with that. Once your scholarship database and AI advisor backend are connected, this response can be generated from your profile and scholarship data.";
+
+      messages.appendChild(advisorMessage);
+
+      messages.scrollTop = messages.scrollHeight;
+
+    }, 500);
+  }
+
+
+  function toggleSidebar() {
+    document
+      .getElementById("sidebar")
+      .classList.toggle("open");
+  }
+
+
+  function logout() {
+
+    localStorage.removeItem("onboardingData");
+
+    window.location.href = "index.html";
+  }
+
+
+  loadUser();
+
+</script>
+
+</body>
+</html>

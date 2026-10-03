@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#26736b">
+  <title>Templates — ScholarMatched</title>
+
+  <style>
+    :root {
+      --primary: #26736b;
+      --primary-dark: #1e5f58;
+      --bg: #f8faf9;
+      --card: #ffffff;
+      --text: #1a2e2c;
+      --muted: #64748b;
+      --light-muted: #94a3b8;
+      --border: #e2e8f0;
+      --sidebar: #ffffff;
+      --danger: #dc2626;
+      --shadow: 0 4px 20px rgba(0, 0, 0, 0.045);
+      --radius: 14px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Inter, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    button,
+    input,
+    textarea {
+      font: inherit;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    /* =========================
+       SIDEBAR
+    ========================= */
+
+    .sidebar {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 250px;
+      height: 100vh;
+      background: var(--sidebar);
+      border-right: 1px solid var(--border);
+      padding: 22px 14px;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 5px 10px 25px;
+    }
+
+    .brand-mark {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: var(--primary);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 17px;
+    }
+
+    .brand-name {
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+
+    .brand-name span {
+      color: var(--primary);
+    }
+
+    .nav {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      flex: 1;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 12px;
+      border-radius: 10px;
+      color: #52616f;
+      font-size: 14px;
+      font-weight: 600;
+      transition: 0.2s;
+    }
+
+    .nav-link:hover {
+      background: #f1f6f5;
+      color: var(--primary);
+    }
+
+    .nav-link.active {
+      background: #eaf4f2;
+      color: var(--primary);
+    }
+
+    .nav-icon {
+      width: 21px;
+      text-align: center;
+      font-size: 17px;
+    }
+
+    .sidebar-bottom {
+      border-top: 1px solid var(--border);
+      padding-top: 12px;
+    }
+
+    .logout {
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      width: 100%;
+      text-align: left;
+    }
+
+    .logout:hover {
+      background: #fef2f2;
+      color: var(--danger);
+    }
+
+    /* =========================
+       MAIN
+    ========================= */
+
+    .main {
+      margin-left: 250px;
+      min-height: 100vh;
+    }
+
+    .topbar {
+      height: 72px;
+      background: rgba(255,255,255,0.94);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 34px;
+      position: sticky;
+      top: 0;
+      z-index: 900;
+      backdrop-filter: blur(8px);
+    }
+
+    .topbar-title {
+      font-size: 14px;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .profile-mini {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 13px;
+    }
+
+    .profile-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .content {
+      padding: 34px;
+      max-width: 1250px;
+    }
+
+    .page-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 28px;
+    }
+
+    .page-header h1 {
+      font-size: 30px;
+      line-height: 1.2;
+      letter-spacing: -0.04em;
+      margin-bottom: 8px;
+    }
+
+    .page-header p {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+      max-width: 650px;
+    }
+
+    /* =========================
+       TEMPLATE GRID
+    ========================= */
+
+    .template-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .template-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px;
+      box-shadow: var(--shadow);
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+      display: flex;
+      flex-direction: column;
+      min-height: 250px;
+    }
+
+    .template-card:hover {
+      transform: translateY(-2px);
+      border-color: #b9d5d1;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.07);
+    }
+
+    .template-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: #eaf4f2;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      margin-bottom: 17px;
+    }
+
+    .template-card h3 {
+      font-size: 17px;
+      margin-bottom: 8px;
+      letter-spacing: -0.02em;
+    }
+
+    .template-card p {
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--muted);
+      flex: 1;
+    }
+
+    .template-meta {
+      margin-top: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .template-type {
+      color: var(--light-muted);
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .use-btn {
+      border: none;
+      background: var(--primary);
+      color: white;
+      padding: 9px 15px;
+      border-radius: 9px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .use-btn:hover {
+      background: var(--primary-dark);
+    }
+
+    /* =========================
+       FEATURED TEMPLATE
+    ========================= */
+
+    .featured {
+      grid-column: span 2;
+      min-height: 225px;
+      background: linear-gradient(135deg, #ffffff, #f0f8f6);
+      border-color: #c9dfdc;
+    }
+
+    .featured .template-icon {
+      background: var(--primary);
+      color: white;
+    }
+
+    /* =========================
+       CUSTOM TEMPLATE SECTION
+    ========================= */
+
+    .section-title {
+      font-size: 19px;
+      letter-spacing: -0.025em;
+      margin: 38px 0 15px;
+    }
+
+    .custom-box {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px;
+      box-shadow: var(--shadow);
+    }
+
+    .custom-box p {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+      margin-bottom: 17px;
+    }
+
+    .custom-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .secondary-btn {
+      border: 1px solid var(--border);
+      background: white;
+      color: var(--text);
+      padding: 10px 15px;
+      border-radius: 9px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .secondary-btn:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    /* =========================
+       MOBILE
+    ========================= */
+
+    .mobile-menu {
+      display: none;
+      border: none;
+      background: transparent;
+      font-size: 25px;
+      cursor: pointer;
+      color: var(--text);
+    }
+
+    .overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.35);
+      z-index: 999;
+    }
+
+    @media (max-width: 1000px) {
+      .template-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .featured {
+        grid-column: span 2;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.25s ease;
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .overlay.open {
+        display: block;
+      }
+
+      .main {
+        margin-left: 0;
+      }
+
+      .mobile-menu {
+        display: block;
+      }
+
+      .topbar {
+        padding: 0 18px;
+      }
+
+      .content {
+        padding: 24px 18px;
+      }
+
+      .page-header {
+        flex-direction: column;
+      }
+
+      .template-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .featured {
+        grid-column: span 1;
+      }
+
+      .profile-name {
+        display: none;
+      }
+    }
+
+    @media (max-width: 450px) {
+      .page-header h1 {
+        font-size: 25px;
+      }
+
+      .template-card {
+        min-height: 230px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+
+    <div class="brand">
+      <div class="brand-mark">S</div>
+      <div class="brand-name">Scholar<span>Matched</span></div>
+    </div>
+
+    <nav class="nav">
+
+      <a class="nav-link" href="home.html">
+        <span class="nav-icon">⌂</span>
+        Dashboard
+      </a>
+
+      <a class="nav-link" href="notifications.html">
+        <span class="nav-icon">♢</span>
+        Notifications
+      </a>
+
+      <a class="nav-link" href="advisor.html">
+        <span class="nav-icon">◉</span>
+        Advisor
+      </a>
+
+      <a class="nav-link" href="sop-reviewer.html">
+        <span class="nav-icon">✎</span>
+        SOP Reviewer
+      </a>
+
+      <a class="nav-link" href="tracker.html">
+        <span class="nav-icon">▣</span>
+        Application Tracker
+      </a>
+
+      <a class="nav-link" href="checklist.html">
+        <span class="nav-icon">✓</span>
+        Checklist
+      </a>
+
+      <a class="nav-link active" href="templates.html">
+        <span class="nav-icon">▤</span>
+        Templates
+      </a>
+
+      <a class="nav-link" href="visa-travel.html">
+        <span class="nav-icon">✈</span>
+        Visa & Travel
+      </a>
+
+      <a class="nav-link" href="profile.html">
+        <span class="nav-icon">♙</span>
+        Profile
+      </a>
+
+      <a class="nav-link" href="referral.html">
+        <span class="nav-icon">↗</span>
+        Referral
+      </a>
+
+      <a class="nav-link" href="index.html">
+        <span class="nav-icon">◫</span>
+        Public Website
+      </a>
+
+    </nav>
+
+    <div class="sidebar-bottom">
+      <button class="nav-link logout" onclick="logout()">
+        <span class="nav-icon">↪</span>
+        Logout
+      </button>
+    </div>
+
+  </aside>
+
+  <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+  <!-- Main -->
+  <main class="main">
+
+    <header class="topbar">
+
+      <div style="display:flex;align-items:center;gap:15px;">
+        <button class="mobile-menu" onclick="toggleSidebar()">☰</button>
+        <div class="topbar-title">Application Resources</div>
+      </div>
+
+      <div class="profile-mini">
+        <div class="profile-name" id="profileName">Student</div>
+        <div class="avatar" id="avatar">S</div>
+      </div>
+
+    </header>
+
+    <section class="content">
+
+      <div class="page-header">
+        <div>
+          <h1>Templates</h1>
+          <p>
+            Use ready-to-customize templates to prepare your scholarship
+            applications, academic documents, and study-abroad plans.
+          </p>
+        </div>
+      </div>
+
+      <div class="template-grid">
+
+        <article class="template-card featured">
+          <div class="template-icon">✦</div>
+
+          <h3>Statement of Purpose</h3>
+
+          <p>
+            A structured SOP template covering your academic background,
+            research interests, motivation, future goals, and why the
+            selected program is right for you.
+          </p>
+
+          <div class="template-meta">
+            <span class="template-type">Academic · SOP</span>
+            <button class="use-btn" onclick="openTemplate('Statement of Purpose')">
+              Use Template
+            </button>
+          </div>
+        </article>
+
+        <article class="template-card">
+          <div class="template-icon">✉</div>
+
+          <h3>Motivation Letter</h3>
+
+          <p>
+            Organize your motivation, achievements, academic interests,
+            and reasons for applying to a scholarship or university.
+          </p>
+
+          <div class="template-meta">
+            <span class="template-type">Application</span>
+            <button class="use-btn" onclick="openTemplate('Motivation Letter')">
+              Use
+            </button>
+          </div>
+        </article>
+
+        <article class="template-card">
+          <div class="template-icon">▤</div>
+
+          <h3>Academic CV</h3>
+
+          <p>
+            A clean structure for presenting education, research,
+            publications, projects, technical skills, and achievements.
+          </p>
+
+          <div class="template-meta">
+            <span class="template-type">CV / Resume</span>
+            <button class="use-btn" onclick="openTemplate('Academic CV')">
+              Use
+            </button>
+          </div>
+        </article>
+
+        <article class="template-card">
+          <div class="template-icon">♧</div>
+
+          <h3>Recommendation Request</h3>
+
+          <p>
+            A professional message template for requesting an academic
+            recommendation letter from a professor or supervisor.
+          </p>
+
+          <div class="template-meta">
+            <span class="template-type">Email</span>
+            <button class="use-btn" onclick="openTemplate('Recommendation Request')">
+              Use
+            </button>
+          </div>
+        </article>
+
+        <article class="template-card">
+          <div class="template-icon">▣</div>
+
+          <h3>Scholarship Email</h3>
+
+          <p>
+            A concise structure for contacting scholarship providers,
+            universities, admissions offices, or program coordinators.
+          </p>
+
+          <div class="template-meta">
+            <span class="template-type">Email</span>
+            <button class="use-btn" onclick="openTemplate('Scholarship Email')">
+              Use
+            </button>
+          </div>
+        </article>
+
+        <article class="template-card">
+          <div class="template-icon">✓</div>
+
+          <h3>Application Plan</h3>
+
+          <p>
+            Plan your application from document preparation through
+            submission and follow-up.
+          </p>
+
+          <div class="template-meta">
+            <span class="template-type">Planning</span>
+            <button class="use-btn" onclick="openTemplate('Application Plan')">
+              Use
+            </button>
+          </div>
+        </article>
+
+      </div>
+
+      <h2 class="section-title">Your Templates</h2>
+
+      <div class="custom-box">
+
+        <p>
+          Create your own reusable document templates or save customized
+          versions of the resources above for future applications.
+        </p>
+
+        <div class="custom-actions">
+          <button class="secondary-btn" onclick="createTemplate()">
+            + Create Template
+          </button>
+
+          <button class="secondary-btn" onclick="alert('Saved templates will appear here.')">
+            View Saved Templates
+          </button>
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <script>
+
+    /* =========================
+       PROFILE
+    ========================= */
+
+    function loadProfile() {
+      try {
+        const data = JSON.parse(localStorage.getItem("onboardingData"));
+
+        if (!data) return;
+
+        const name =
+          data.name ||
+          data.fullName ||
+          data.full_name ||
+          "Student";
+
+        document.getElementById("profileName").textContent = name;
+
+        const initials = name
+          .split(" ")
+          .filter(Boolean)
+          .slice(0, 2)
+          .map(word => word[0])
+          .join("")
+          .toUpperCase();
+
+        document.getElementById("avatar").textContent =
+          initials || "S";
+
+      } catch (error) {
+        console.log("Profile data unavailable.");
+      }
+    }
+
+    /* =========================
+       TEMPLATE ACTIONS
+    ========================= */
+
+    function openTemplate(templateName) {
+
+      localStorage.setItem(
+        "selectedTemplate",
+        templateName
+      );
+
+      alert(
+        templateName +
+        " selected.\n\nA customized editor can be connected here."
+      );
+    }
+
+    function createTemplate() {
+      const name = prompt("Enter a name for your new template:");
+
+      if (!name || !name.trim()) {
+        return;
+      }
+
+      const templates =
+        JSON.parse(localStorage.getItem("customTemplates") || "[]");
+
+      templates.push({
+        name: name.trim(),
+        createdAt: new Date().toISOString()
+      });
+
+      localStorage.setItem(
+        "customTemplates",
+        JSON.stringify(templates)
+      );
+
+      alert("Template created successfully.");
+    }
+
+    /* =========================
+       SIDEBAR
+    ========================= */
+
+    function toggleSidebar() {
+      document
+        .getElementById("sidebar")
+        .classList.toggle("open");
+
+      document
+        .getElementById("overlay")
+        .classList.toggle("open");
+    }
+
+    /* =========================
+       LOGOUT
+    ========================= */
+
+    function logout() {
+      localStorage.removeItem("onboardingData");
+      window.location.href = "index.html";
+    }
+
+    loadProfile();
+
+  </script>
+
+</body>
+</html>

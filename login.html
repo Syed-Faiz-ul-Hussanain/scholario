@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#26736b">
+  <title>Sign in | ScholarMatched</title>
+  <style>
+    :root { color-scheme: light; --ink: #17332f; --muted: #627673; --teal: #26736b; --paper: #f5f8f6; --line: #dce6e2; --coral: #dc785f; }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; display: grid; grid-template-columns: minmax(280px, .9fr) 1.1fr; background: var(--paper); color: var(--ink); font-family: "Trebuchet MS", "Segoe UI", sans-serif; }
+    .intro { min-height: 100vh; padding: clamp(32px, 6vw, 88px); display: flex; flex-direction: column; justify-content: space-between; background: #123b36; color: #f5fbf8; position: relative; overflow: hidden; }
+    .intro::after { content: ""; position: absolute; width: 340px; height: 340px; right: -110px; bottom: 8%; border: 1px solid rgba(224,242,234,.2); border-radius: 50%; box-shadow: 0 0 0 38px rgba(224,242,234,.04), 0 0 0 78px rgba(224,242,234,.035); }
+    .brand { display: flex; align-items: center; gap: 12px; font-weight: 800; font-size: 18px; letter-spacing: 0; }
+    .brand img { width: 42px; height: 42px; object-fit: contain; }
+    .intro-copy { max-width: 470px; position: relative; z-index: 1; }
+    .eyebrow { color: #aad2c5; font-size: 12px; font-weight: 700; text-transform: uppercase; }
+    h1 { font-size: clamp(34px, 4vw, 56px); line-height: 1.04; margin: 16px 0; }
+    .intro-copy p { max-width: 390px; color: #d0e1db; line-height: 1.7; }
+    .intro-foot { color: #bad0c9; font-size: 13px; position: relative; z-index: 1; }
+    .main { display: grid; place-items: center; padding: 32px 24px; }
+    .login { width: min(100%, 420px); }
+    .login h2 { margin: 0 0 8px; font-size: 30px; }
+    .sub { color: var(--muted); margin: 0 0 28px; line-height: 1.55; }
+    label { display: block; margin: 18px 0 7px; font-size: 13px; font-weight: 700; }
+    input { width: 100%; height: 48px; border: 1px solid var(--line); border-radius: 5px; padding: 0 13px; background: #fff; color: var(--ink); font: inherit; }
+    input:focus { outline: 3px solid #c9e3d9; border-color: var(--teal); }
+    button { width: 100%; margin-top: 22px; height: 49px; border: 0; border-radius: 5px; background: var(--teal); color: #fff; font-size: 15px; font-weight: 800; cursor: pointer; }
+    button:hover { background: #1d5e57; }
+    button:disabled { opacity: .65; cursor: wait; }
+    .demo { margin-top: 24px; padding: 15px 16px; background: #eaf2ee; border-left: 3px solid var(--coral); font-size: 13px; line-height: 1.7; }
+    .demo strong { display: block; margin-bottom: 3px; }
+    .demo code { color: #17332f; font-family: ui-monospace, monospace; overflow-wrap: anywhere; }
+    .message { min-height: 22px; margin: 12px 0 0; color: #a3372e; font-size: 13px; }
+    .back { color: var(--teal); font-weight: 700; text-decoration: none; font-size: 13px; }
+    @media (max-width: 720px) { body { grid-template-columns: 1fr; } .intro { min-height: 245px; padding: 24px; } .intro-copy { margin-top: 34px; } .intro h1 { font-size: 34px; } .intro-foot { display: none; } .main { padding: 36px 22px 48px; } }
+  </style>
+</head>
+<body>
+  <aside class="intro">
+    <a class="brand" href="/index.html"><img src="SM_TAB.png" alt=""><span>ScholarMatched</span></a>
+    <div class="intro-copy"><div class="eyebrow">Your study plan, in one place</div><h1>Make your next application count.</h1><p>Sign in to explore sample scholarships, save opportunities, and keep your application materials together.</p></div>
+    <div class="intro-foot">ScholarMatched demo workspace</div>
+  </aside>
+  <main class="main">
+    <section class="login">
+      <a class="back" href="/index.html">&larr; Back to ScholarMatched</a>
+      <h2 style="margin-top:28px">Welcome back</h2>
+      <p class="sub">Use the demo account to open your scholarship dashboard.</p>
+      <form id="loginForm">
+        <label for="email">Email address</label>
+        <input id="email" name="email" type="email" autocomplete="username" required value="student@scholarmatched.test">
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" autocomplete="current-password" required>
+        <button type="submit">Sign in to dashboard</button>
+        <p class="message" id="loginMessage" role="alert" aria-live="polite"></p>
+      </form>
+      <div class="demo"><strong>Demo access</strong>Email: <code>student@scholarmatched.test</code><br>Password: <code>ScholarDemo2026!</code></div>
+    </section>
+  </main>
+</body>
+</html>
